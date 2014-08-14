@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Screens</title>
     <script type="text/javascript" src="lib/d3.js"></script>
     <script type="text/javascript" src="lib/crossfilter.js"></script>
@@ -54,23 +53,17 @@
 </header>
 
 <div id="sidebar" role="complentary">
-    <div id="type" class="chart"><header><h5>Device Type</h5></header></div>
-    <div id="company" class="chart"><header><h5>Company</h5></header></div>
-    <div id="resolution" class="chart"><header><h5>Resolution(ppi)</h5></header></div>
-    <div id="brightness" class="chart"><header><h5>Brightness(nits)</h5></header></div>
+    <div id="Type" class="chart"><header><h5>Device Type</h5></header></div>
+    <div id="Company" class="chart"><header><h5>Company</h5></header></div>
+    <div id="Resolution" class="chart"><header><h5>Resolution(ppi)</h5></header></div>
+    <div id="Brightness" class="chart"><header><h5>Brightness(nits)</h5></header></div>
 </div> <!-- sidebar -->
 
 <div id="main" role="main">
 
     <table id="list" class="table table-hover dc-data-table dc-chart" style="margin-top:5%;">
     <thead>
-    <tr class="header" style="text-align:left;">
-    <th></th>
-    <th>Resolution (ppi)</th>
-    <th>Brightness (nits)</th>
-    <th>Screen Diameter (in)</th>
-    <th>Model No</th>
-    <th>Data Source</th>
+    <tr id="FieldNames" class="header" style="text-align:left;">
     </tr>
     </thead>
     </table> 
@@ -91,26 +84,29 @@
     
     d3.csv('data/data.csv', function(Data){
 
-        function hypotenuse(w,h) = {
-
+        function hypotenuse(w,h) {
+            var w = +w;
+            var h = +h;
             var r = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
-
             return r;
-        }
+        };
         
         /* CONVERT TO NUMBERS AND CALCULATE PPI */
         Data.forEach(function(d){
+
+            var currency = d.Price;
+            var number = Number(currency.replace(/[^0-9\.]+/g,""));
             
-            d.Price             = +dPrice;
+            d.Price             =  number;
             d.WeightGrams       = +d.WeightGrams;
             d.DiameterInches    = +d.DiameterInches;
-            d.HorizonalPixels   = +d.HorizonalPixels;
+            d.HorizontalPixels  = +d.HorizontalPixels;
             d.VerticalPixels    = +d.VerticalPixels;
             d.BrightnessNits    = +d.BrightnessNits;
             
-            d.PPI =  hypotenuse(d.HorizonalPixels,d.VerticalPixels)/d.DiameterInches;
+            d.PPI =  Math.round(hypotenuse(d.HorizontalPixels,d.VerticalPixels)/d.DiameterInches);
+            console.log(d.Price);
         });
-
         /*
         *  MIN AND MAX VALUES 
         */
@@ -124,17 +120,17 @@
         /*
         * CROSS FILTER, DIMENSIONS, GROUPS
         */
-        var xf = crossfilter(Data),
-            type = xf.dimension(function(d) { return d.type;}),
-            count_by_type = type.group(),
-            company = xf.dimension(function(d) { return d.manufacture;}),
-            companies = company.group(),
-            resolution = xf.dimension(function(d) { return d.PPI;}),
-            resolutions = resolution.group(),
-            brightness = xf.dimension(function(d) { return +d.BrightnessNits}),
-            brightnesses = brightness.group();
+        var CrossFilter = crossfilter(Data),
+            TypeDimension = CrossFilter.dimension(function(d) { return d.Type;}),
+            TypeGroup = TypeDimension.group(),
+            CompanyDimension = CrossFilter.dimension(function(d) { return d.Company;}),
+            CompanyGroup = CompanyDimension.group(),
+            ResolutionDimension = CrossFilter.dimension(function(d) { return d.PPI;}),
+            ResolutionGroup = ResolutionDimension.group(),
+            BrightnessDimension = CrossFilter.dimension(function(d) { return +d.BrightnessNits}),
+            BrightnessGroup = BrightnessDimension.group();
 
-        // resolution.filter([100,200]);
+        // ResolutionDimension.filter([100,200]);
         
         /*
         * CHARTS
@@ -144,9 +140,9 @@
 
         var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]),
 
-        typeChart = dc.rowChart("#type")
-        .dimension(type)
-        .group(count_by_type)
+        typeChart = dc.rowChart("#Type")
+        .dimension(TypeDimension)
+        .group(TypeGroup)
         .width(chartWidth)
         .height(200)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
@@ -154,9 +150,9 @@
    
         colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]),
 
-        companyChart = dc.rowChart("#company")
-        .dimension(company)
-        .group(companies)
+        CompanyChart = dc.rowChart("#Company")
+        .dimension(CompanyDimension)
+        .group(CompanyGroup)
         .width(chartWidth)
         .height(200)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
@@ -166,9 +162,9 @@
         .domain([ResolutionExtent[0],ResolutionExtent[1]])
         .range(["#9ecae1","#3182bd"]),
 
-        resolutionChart = dc.rowChart("#resolution")
-        .dimension(resolution)
-        .group(resolutions)
+        resolutionChart = dc.rowChart("#Resolution")
+        .dimension(ResolutionDimension)
+        .group(ResolutionGroup)
         .width(chartWidth)
         .height(400)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
@@ -178,25 +174,49 @@
         .domain([BrightnessExtent[0],BrightnessExtent[1]])
         .range(["#fdae6b","#e6550d"]),
 
-        brightnessChart = dc.rowChart("#brightness")
-        .dimension(brightness)
-        .group(brightnesses)
+        BrightnessChart = dc.rowChart("#Brightness")
+        .dimension(Brightness)
+        .group(BrightnessGroup)
         .width(chartWidth)
         .height(400)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
         .colors(colorScaleBrightness),
 
+        // Data Table Field Names
+        FieldNames = [
+            "Item",
+            "Resolution",
+            "Price",
+            "Weight",
+            "Brightness",
+            "Screen Size",
+            "Model",
+            "Availability",
+            "Data Source 1", 
+            "Data Source 2"]; 
+
+        d3.select("tr#FieldNames").selectAll("th")
+            .data(FieldNames)
+            .enter()
+            .append("th") 
+            .append("text")
+            .text(function(d){ return d;});
+
 
         list = dc.dataTable("#list")
-        .dimension(type)
-        .group(function(d) {return d.type;})
+        .dimension(TypeDimension)
+        .group(function(d) {return d.Type;})
         .columns([
-        function(d) {return d.item;},
+        function(d) {return d.Item;},
         function(d) {return d.PPI;},
+        function(d) {return d.Price;},
+        function(d) {return d.WeightGrams;},
         function(d) {return d.BrightnessNits;},
-        function(d) {return d.di;},
+        function(d) {return d.DiameterInches;},
         function(d) {return d.Model;},
-        function(d) {return "<a href='" + d.data_source + "'>url</a>";}
+        function(d) {return "<a href='" + d.PriceSource + "'>Buy Now</a>";},
+        function(d) {return "<a href='" + d.DataSource01 + "'>url</a>";},
+        function(d) {return "<a href='" + d.DataSource02 + "'>url</a>";}
         ]);
 
         dc.renderAll()
@@ -213,7 +233,7 @@
         d3.select(window).on("resize",resize);
 
    // "item":"Samsung Galaxy Tab Pro 8.4",
-   //  "manufacture":"Samsung",
+   //  "Company":"Samsung",
    //  "type":"tablet",
    //  "di":8.4,
    //  "hp":1600,
@@ -224,7 +244,7 @@
    //  "Model":"SM-T320NZWAXAR",
    //  "data_source":"http://www.samsung.com/us/mobile/galaxy-tab/SM-T320NZWAXAR",
    //  "collected_date":"06/10/14",
-   //  "data_source_brightness":"http://www.phonearena.com/reviews/Samsung-Galaxy-Tab-PRO-8.4-Review_id3588"
+   //  "data_source_Brightness":"http://www.phonearena.com/reviews/Samsung-Galaxy-Tab-PRO-8.4-Review_id3588"
  
 
 
