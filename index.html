@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screens</title>
+    <script type="text/javascript" src="lib/d3.js"></script>
+    <script type="text/javascript" src="lib/crossfilter.js"></script>
+    <script type="text/javascript" src="lib/dc.js"></script>
+    <script type="text/javascript" src="lib/colorbrewer.js"></script>
+    <link href="css/reset.css" rel="stylesheet" type="text/css" > 
+    <link href="css/dc.css" rel="stylesheet" type="text/css" > 
+    <link href="css/statvisions.css" rel="stylesheet" type="text/css" >
+    <style>
+
+    .dc-chart .grid-line {
+        stroke:#FFFFFF;
+    }
+
+    tr.header th {
+        text-align: right;
+    }
+
+    td.dc-table-label {
+        background-color: SlateGray;
+        color:white;
+        padding-left: 1%;
+        padding-top: 1%;
+        padding-bottom: 1%;
+    }
+
+    td.dc-table-column {
+        padding-left: 1%;
+        padding-right:1%;
+        padding-top:1%;
+        padding-bottom:1%;
+    }
+
+    td.dc-table-column{
+        text-align: right;
+    }
+    </style>
+</head>
+
+<body>
+
+<div id="special">
+    <h2><strong> Help! </strong>How Do We Compare Tablets, Smartphones, Laptops, Smart Watches, Monitors and Everything in Between?</h2> 
+</div>
+ 
+<div id="wrap">  
+
+<header role="banner">
+</header>
+
+<div id="sidebar" role="complentary">
+    <div id="type" class="chart"><header><h5>Device Type</h5></header></div>
+    <div id="company" class="chart"><header><h5>Company</h5></header></div>
+    <div id="resolution" class="chart"><header><h5>Resolution(ppi)</h5></header></div>
+    <div id="brightness" class="chart"><header><h5>Brightness(nits)</h5></header></div>
+</div> <!-- sidebar -->
+
+<div id="main" role="main">
+
+    <table id="list" class="table table-hover dc-data-table dc-chart" style="margin-top:5%;">
+    <thead>
+    <tr class="header" style="text-align:left;">
+    <th></th>
+    <th>Resolution (ppi)</th>
+    <th>Brightness (nits)</th>
+    <th>Screen Diameter (in)</th>
+    <th>Model No</th>
+    <th>Data Source</th>
+    </tr>
+    </thead>
+    </table> 
+
+</div> <!-- /main -->
+
+
+
+<footer role="contentinfo">
+...footer goes here
+</footer>
+
+</div>  <!-- /wrap --> 
+
+     
+<script type="text/javascript">
+
+    
+    d3.csv('data/data.csv', function(Data){
+
+        function hypotenuse(w,h) = {
+
+            var r = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
+
+            return r;
+        }
+        
+        /* CONVERT TO NUMBERS AND CALCULATE PPI */
+        Data.forEach(function(d){
+            
+            d.Price             = +dPrice;
+            d.WeightGrams       = +d.WeightGrams;
+            d.DiameterInches    = +d.DiameterInches;
+            d.HorizonalPixels   = +d.HorizonalPixels;
+            d.VerticalPixels    = +d.VerticalPixels;
+            d.BrightnessNits    = +d.BrightnessNits;
+            
+            d.PPI =  hypotenuse(d.HorizonalPixels,d.VerticalPixels)/d.DiameterInches;
+        });
+
+        /*
+        *  MIN AND MAX VALUES 
+        */
+        var BrightnessAccessor = function(d){return d.BrightnessNits;},
+            BrightnessExtent = [],
+            BrightnessExtent = d3.extent(Data,BrightnessAccessor);
+
+        var ResolutionAccessor = function(d){return d.PPI;},
+            ResolutionExtent = [],
+            ResolutionExtent = d3.extent(Data,ResolutionAccessor);
+        /*
+        * CROSS FILTER, DIMENSIONS, GROUPS
+        */
+        var xf = crossfilter(Data),
+            type = xf.dimension(function(d) { return d.type;}),
+            count_by_type = type.group(),
+            company = xf.dimension(function(d) { return d.manufacture;}),
+            companies = company.group(),
+            resolution = xf.dimension(function(d) { return d.PPI;}),
+            resolutions = resolution.group(),
+            brightness = xf.dimension(function(d) { return +d.BrightnessNits}),
+            brightnesses = brightness.group();
+
+        // resolution.filter([100,200]);
+        
+        /*
+        * CHARTS
+        */
+
+        var chartWidth = parseInt(d3.select("div#sidebar").style("width"));
+
+        var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]),
+
+        typeChart = dc.rowChart("#type")
+        .dimension(type)
+        .group(count_by_type)
+        .width(chartWidth)
+        .height(200)
+        .margins({top: 0, right: 0, bottom: -1, left: 0})
+        .colors(colorScaleType),
+   
+        colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]),
+
+        companyChart = dc.rowChart("#company")
+        .dimension(company)
+        .group(companies)
+        .width(chartWidth)
+        .height(200)
+        .margins({top: 0, right: 0, bottom: -1, left: 0})
+        .colors(colorScaleCompany),
+
+        colorScaleResolution = d3.scale.linear()
+        .domain([ResolutionExtent[0],ResolutionExtent[1]])
+        .range(["#9ecae1","#3182bd"]),
+
+        resolutionChart = dc.rowChart("#resolution")
+        .dimension(resolution)
+        .group(resolutions)
+        .width(chartWidth)
+        .height(400)
+        .margins({top: 0, right: 0, bottom: -1, left: 0})
+        .colors(colorScaleResolution), 
+
+        colorScaleBrightness = d3.scale.linear()
+        .domain([BrightnessExtent[0],BrightnessExtent[1]])
+        .range(["#fdae6b","#e6550d"]),
+
+        brightnessChart = dc.rowChart("#brightness")
+        .dimension(brightness)
+        .group(brightnesses)
+        .width(chartWidth)
+        .height(400)
+        .margins({top: 0, right: 0, bottom: -1, left: 0})
+        .colors(colorScaleBrightness),
+
+
+        list = dc.dataTable("#list")
+        .dimension(type)
+        .group(function(d) {return d.type;})
+        .columns([
+        function(d) {return d.item;},
+        function(d) {return d.PPI;},
+        function(d) {return d.BrightnessNits;},
+        function(d) {return d.di;},
+        function(d) {return d.Model;},
+        function(d) {return "<a href='" + d.data_source + "'>url</a>";}
+        ]);
+
+        dc.renderAll()
+        
+
+        function resize(){
+            
+            chartWidth = parseInt(d3.select("div#sidebar").style("width"));
+            console.log(chartWidth);
+            dc.renderAll();
+        };
+
+        // run resize function when the window changes
+        d3.select(window).on("resize",resize);
+
+   // "item":"Samsung Galaxy Tab Pro 8.4",
+   //  "manufacture":"Samsung",
+   //  "type":"tablet",
+   //  "di":8.4,
+   //  "hp":1600,
+   //  "wp":2560,
+   //  "dp":3019,
+   //  "PPI":359,
+   //  "BrightnessNits":410,
+   //  "Model":"SM-T320NZWAXAR",
+   //  "data_source":"http://www.samsung.com/us/mobile/galaxy-tab/SM-T320NZWAXAR",
+   //  "collected_date":"06/10/14",
+   //  "data_source_brightness":"http://www.phonearena.com/reviews/Samsung-Galaxy-Tab-PRO-8.4-Review_id3588"
+ 
+
+
+
+
+    });
+</script>
+
+</body>
+
+</html>
