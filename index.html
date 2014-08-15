@@ -94,18 +94,29 @@
         /* CONVERT TO NUMBERS AND CALCULATE PPI */
         Data.forEach(function(d){
 
-            var currency = d.Price;
-            var number = Number(currency.replace(/[^0-9\.]+/g,""));
+            var PriceString = d.Price;
+            var PriceNumber = Number(PriceString.replace(/[^0-9\.]+/g,""));
+
+            var TypeString = d.Type;
+            var TypeSansSpace = TypeString.toLowerCase()
+                .replace("desktop","")
+                .replace(" ","");
+
+
             
-            d.Price             =  number;
+            d.Price             =  PriceNumber;
             d.WeightGrams       = +d.WeightGrams;
             d.DiameterInches    = +d.DiameterInches;
             d.HorizontalPixels  = +d.HorizontalPixels;
             d.VerticalPixels    = +d.VerticalPixels;
             d.BrightnessNits    = +d.BrightnessNits;
             
+        
             d.PPI =  Math.round(hypotenuse(d.HorizontalPixels,d.VerticalPixels)/d.DiameterInches);
-            console.log(d.Price);
+            
+            d.Type = TypeSansSpace;
+
+
         });
         /*
         *  MIN AND MAX VALUES 
@@ -144,7 +155,7 @@
         .dimension(TypeDimension)
         .group(TypeGroup)
         .width(chartWidth)
-        .height(200)
+        .height(300)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
         .colors(colorScaleType),
    
@@ -154,7 +165,7 @@
         .dimension(CompanyDimension)
         .group(CompanyGroup)
         .width(chartWidth)
-        .height(200)
+        .height(300)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
         .colors(colorScaleCompany),
 
@@ -166,7 +177,7 @@
         .dimension(ResolutionDimension)
         .group(ResolutionGroup)
         .width(chartWidth)
-        .height(400)
+        .height(700)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
         .colors(colorScaleResolution), 
 
@@ -178,7 +189,7 @@
         .dimension(Brightness)
         .group(BrightnessGroup)
         .width(chartWidth)
-        .height(400)
+        .height(700)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
         .colors(colorScaleBrightness),
 
