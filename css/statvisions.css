@@ -6,21 +6,18 @@ body {
   
 #main {
     float: right;
-    width:48%;
-    margin: 0 5px 0px 0;
-    padding:5px;
-    border: 2px solid;
-    border-radius: 10px;
+    width:100%;
+    padding:px;
     font-size: 70%;
+    background-color: rgba(114,114,114,.15);
+    border-radius: 8px;
 }
 
 #sidebar {
     float:left;
-    width:48%;
-    margin:0 0 0 5px;
-    padding:5px;
-    border: 2px solid;
-    border-radius: 10px;
+    width:100%;
+    margin-left:0em;
+    padding:0;
 }
 
 footer[role="contentinfo"] {
@@ -38,23 +35,14 @@ footer[role="contentinfo"] {
     padding: 10px 30px 16px 30px;
     line-height: 1.3;
     color:white;
-    background-color: black;
+    background-color: SlateGray;
 }
 
-#special h2 {
-    max-width:1200px;
-    margin: 0 auto;
-    font-weight: normal;
+div#special h2 {
+    text-align: center;
+
 }
 
-#special h2 strong {
-    font-family: Helvetica, Arial, sans-serif;
-    font-size: .9em;
-    font-weight: normal;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color:white;
-}
 
 header[role="banner"] {
     margin: 0 0 50px 0;
@@ -82,6 +70,66 @@ nav[role="navigation"] ul li a {
     width:100%;
     margin: 20px 0 0 0;
 }
+
+/*DC Charts Data Table*/
+
+tr.dc-table-row:nth-of-type(odd) { background-color: rgba(114, 114, 114, .02);}
+tr.dc-table-row:nth-of-type(even) {background-color: rgba(114, 114,114,.15);}
+
+table#list {
+    width:100%;
+}
+
+    tr.header th {
+        text-align: right;
+    }
+
+    td.dc-table-label {
+        background-color: SlateGray;
+        color:white;
+        padding-left: 1%;
+        padding-top: 1%;
+        padding-bottom: 1%;
+    }
+
+    td.dc-table-column {
+        padding-left: 1%;
+        padding-right:1%;
+        padding-top:1%;
+        padding-bottom:1%;
+    }
+
+    td.dc-table-column{
+        text-align: right;
+    }
+
+
+    .dc-chart .grid-line {
+        stroke:rgba(114,114,114,.15); /*should match background color of div.dc-chart*/
+        opacity: 0;
+    }   
+
+
+    div.dc-chart {
+        margin-top: 1em;
+        margin-left:auto;
+        margin-right: auto;
+        margin-bottom: 1em;
+        background-color: rgba(114,114,114,.15);
+        border-radius: 8px;
+    }
+
+    div.dc-chart header {
+        padding-bottom: 1em;
+    }
+
+    .dc-chart g.row text {
+        font-size: .85em;
+        text-anchor: start;
+    }
+
+    
+
 
 
 

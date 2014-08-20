@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+<!--     To Do 8/20/14
+    1.  Format Table - done
+    2.  Get SVG Bars to Adjust With Based on DIV Container -->
     <meta charset="utf-8">
     <title>Screens</title>
     <script type="text/javascript" src="lib/d3.js"></script>
@@ -11,40 +15,13 @@
     <link href="css/dc.css" rel="stylesheet" type="text/css" > 
     <link href="css/statvisions.css" rel="stylesheet" type="text/css" >
     <style>
-
-    .dc-chart .grid-line {
-        stroke:#FFFFFF;
-    }
-
-    tr.header th {
-        text-align: right;
-    }
-
-    td.dc-table-label {
-        background-color: SlateGray;
-        color:white;
-        padding-left: 1%;
-        padding-top: 1%;
-        padding-bottom: 1%;
-    }
-
-    td.dc-table-column {
-        padding-left: 1%;
-        padding-right:1%;
-        padding-top:1%;
-        padding-bottom:1%;
-    }
-
-    td.dc-table-column{
-        text-align: right;
-    }
     </style>
 </head>
 
 <body>
 
 <div id="special">
-    <h2><strong> Help! </strong>How Do We Compare Tablets, Smartphones, Laptops, Smart Watches, Monitors and Everything in Between?</h2> 
+    <h2>Tablets, Smartphones, Laptops, Smart Watches, Monitors and Everything in Between</h2> 
 </div>
  
 <div id="wrap">  
@@ -52,12 +29,9 @@
 <header role="banner">
 </header>
 
-<div id="sidebar" role="complentary">
-    <div id="Type" class="chart"><header><h5>Device Type</h5></header></div>
-    <div id="Company" class="chart"><header><h5>Company</h5></header></div>
-    <div id="Resolution" class="chart"><header><h5>Resolution(ppi)</h5></header></div>
-    <div id="Brightness" class="chart"><header><h5>Brightness(nits)</h5></header></div>
-</div> <!-- sidebar -->
+<div id="sidebar" role="complementary">
+        <div id="Type" class="chart"></div>
+</div>
 
 <div id="main" role="main">
 
@@ -70,10 +44,16 @@
 
 </div> <!-- /main -->
 
+<div id="sidebar" role="complentary">
+    <div id="Resolution" class="chart"><header><h5>Resolution(ppi)</h5></header></div>
+    <div id="Brightness" class="chart"><header><h5>Brightness(nits)</h5></header></div>
+    <div id="Company" class="chart"><header><h5>Company</h5></header></div>
+</div> <!-- sidebar -->
+
 
 
 <footer role="contentinfo">
-...footer goes here
+StatVisions, Copyright 2014, All Rights Reserved
 </footer>
 
 </div>  <!-- /wrap --> 
@@ -81,7 +61,9 @@
      
 <script type="text/javascript">
 
+     
     
+
     d3.csv('data/data.csv', function(Data){
 
         function hypotenuse(w,h) {
@@ -104,7 +86,7 @@
 
 
             
-            d.Price             =  PriceNumber;
+            d.Price             = +PriceNumber;
             d.WeightGrams       = +d.WeightGrams;
             d.DiameterInches    = +d.DiameterInches;
             d.HorizontalPixels  = +d.HorizontalPixels;
@@ -147,7 +129,7 @@
         * CHARTS
         */
 
-        var chartWidth = parseInt(d3.select("div#sidebar").style("width"));
+        var chartWidth = parseInt(d3.select("div#sidebar").style("width"))*.45;
 
         var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]),
 
@@ -165,7 +147,6 @@
         .dimension(CompanyDimension)
         .group(CompanyGroup)
         .width(chartWidth)
-        .height(300)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
         .colors(colorScaleCompany),
 
@@ -177,7 +158,6 @@
         .dimension(ResolutionDimension)
         .group(ResolutionGroup)
         .width(chartWidth)
-        .height(700)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
         .colors(colorScaleResolution), 
 
@@ -189,22 +169,21 @@
         .dimension(Brightness)
         .group(BrightnessGroup)
         .width(chartWidth)
-        .height(700)
         .margins({top: 0, right: 0, bottom: -1, left: 0})
         .colors(colorScaleBrightness),
 
         // Data Table Field Names
         FieldNames = [
-            "Item",
+            "",
             "Resolution",
             "Price",
             "Weight",
             "Brightness",
-            "Screen Size",
-            "Model",
-            "Availability",
-            "Data Source 1", 
-            "Data Source 2"]; 
+            "Screen"];
+            // "Model",
+            // "Availability",
+            // "Data Source 1", 
+            // "Data Source 2"]; 
 
         d3.select("tr#FieldNames").selectAll("th")
             .data(FieldNames)
@@ -223,25 +202,29 @@
         function(d) {return d.Price;},
         function(d) {return d.WeightGrams;},
         function(d) {return d.BrightnessNits;},
-        function(d) {return d.DiameterInches;},
-        function(d) {return d.Model;},
-        function(d) {return "<a href='" + d.PriceSource + "'>Buy Now</a>";},
-        function(d) {return "<a href='" + d.DataSource01 + "'>url</a>";},
-        function(d) {return "<a href='" + d.DataSource02 + "'>url</a>";}
+        function(d) {return d.DiameterInches;}
+        // function(d) {return d.Model;},
+        // function(d) {return "<a href='" + d.PriceSource + "'>Buy Now</a>";},
+        // function(d) {return "<a href='" + d.DataSource01 + "'>url</a>";},
+        // function(d) {return "<a href='" + d.DataSource02 + "'>url</a>";}
         ]);
 
         dc.renderAll()
-        
+
+
+
 
         function resize(){
             
-            chartWidth = parseInt(d3.select("div#sidebar").style("width"));
-            console.log(chartWidth);
+            var ChartWidth = parseInt(d3.select("div#sidebar").style("width"))*.45;
             dc.renderAll();
+            d3.selectAll(".dc-chart g.row rect").attr("rx",8);
         };
 
         // run resize function when the window changes
         d3.select(window).on("resize",resize);
+
+        d3.selectAll(".dc-chart g.row rect").attr("rx",8);
 
    // "item":"Samsung Galaxy Tab Pro 8.4",
    //  "Company":"Samsung",
