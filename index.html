@@ -1,68 +1,102 @@
 <!DOCTYPE html>
 <html>
-<head>
-
-<!--     To Do 8/20/14
-    1.  Format Table - done
-    2.  Get SVG Bars to Adjust With Based on DIV Container -->
-    <meta charset="utf-8">
-    <title>Screens</title>
-    <script type="text/javascript" src="lib/d3.js"></script>
-    <script type="text/javascript" src="lib/crossfilter.js"></script>
-    <script type="text/javascript" src="lib/dc.js"></script>
-    <script type="text/javascript" src="lib/colorbrewer.js"></script>
-    <link href="css/reset.css" rel="stylesheet" type="text/css" > 
-    <link href="css/dc.css" rel="stylesheet" type="text/css" > 
-    <link href="css/statvisions.css" rel="stylesheet" type="text/css" >
-    <style>
-    </style>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Screens</title>
+        <script type="text/javascript" src="node_modules/d3/d3.js"></script>
+        <script type="text/javascript" src="node_modules/crossfilter/crossfilter.js"></script>
+        <script type="text/javascript" src="node_modules/dc/dc.js"></script>
+        <link   type="text/css"        href="node_modules/dc/dc.css" rel="stylesheet">
+        <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+        <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+        <link   type="text/css"        href="node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+        <script type="text/javascript" src="node_modules/colorbrewer/colorbrewer.js"></script>
+  
+    </head>
 
 <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 
-<div id="special">
-    <h2>Gadget Types by Resolution, Brightness, Weight, Size and Price</h2> 
-</div>
- 
-<div id="wrap">  
+        <div class="container" id="container1">
 
-<header role="banner">
-</header>
+            <div class="navbar-header">
+                
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                
+                <a class="navbar-brand">Catchy Screens</a>
 
-<div id="sidebar" role="complementary">
-        <div id="Type" class="chart"></div>
-</div>
+            </div>
+            
+            <div class="collapse navbar-collapse">
+                
+                <ul class="nav navbar-nav"></ul>
+            
+            </div><!--/.nav-collapse -->
 
-<div id="main" role="main">
+        </div>
 
-    <table id="list" class="table table-hover dc-data-table dc-chart" style="margin-top:5%;">
-    <thead>
-    <tr id="FieldNames" class="header" style="text-align:left;">
-    </tr>
-    </thead>
-    </table> 
+    </div>
 
-</div> <!-- /main -->
+   
 
-<div id="sidebar" role="complentary">
-    <div id="Resolution" class="chart"><header><h5>Resolution(ppi)</h5></header></div>
-    <div id="Brightness" class="chart"><header><h5>Brightness(nits)</h5></header></div>
-    <div id="Company" class="chart"><header><h5>Company</h5></header></div>
-</div> <!-- sidebar -->
+    <div class="container" role="main" id="container2">
 
+        <div class="jumbotron">
 
+            <div class="row" id="1">
 
-<footer role="contentinfo">
-StatVisions, Copyright 2014, All Rights Reserved
-</footer>
+                    <figure id="chart1" class="dc-chart col-md-6">
+                        <a class="reset" href="javascript:typeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 
-</div>  <!-- /wrap --> 
+                    </figure>
 
+                   <figure id="chart2" class="dc-chart col-md-6">
+                        <a class="reset" href="javascript:companyChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+
+                    </figure>
+
+            </div> <!-- end row 1 -->
+          
+          <div class="row" id="2">
+
+          </div> <!-- end row 2 -->
+
+          <div class="row" id="3">
+
+                <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
+                    
+                    <span class="filter-count"></span> selected out of <span class="total-count"></span> records | 
+                    <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a>
+                
+                </figure>
+
+          </div> <!-- end row 3 -->
+
+          <div class="row" id="4">
+
+                <table id="list" class="table table-hover dc-data-table dc-chart col-md-4" style="margin-top:5%;">
+                    <thead>
+                        <tr id="FieldNames" class="header" style="text-align:left;"></tr>
+                    </thead>
+                </table> 
+
+          </div> <!-- end row 4 -->
+        </div> <!-- end jumbotron -->
+    </div> <!-- end container -->
      
 <script type="text/javascript">
 
-     
-    
+    var typeChart = dc.rowChart("figure#chart1");
+    var companyChart = dc.rowChart("figure#chart2");
+    var countWidget = dc.dataCount("figure.dc-data-count");
+    CrossFilter = {}; // no var so this should make it modifiable at function scope and global
 
     d3.csv('data/data.csv', function(Data){
 
@@ -72,37 +106,27 @@ StatVisions, Copyright 2014, All Rights Reserved
             var r = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
             return r;
         };
-        
-        /* CONVERT TO NUMBERS AND CALCULATE PPI */
-        Data.forEach(function(d){
 
-            var PriceString = d.Price;
-            var PriceNumber = Number(PriceString.replace(/[^0-9\.]+/g,""));
+        Data.forEach(function(d){
 
             var TypeString = d.Type;
             var TypeSansSpace = TypeString.toLowerCase()
                 .replace("desktop","")
                 .replace(" ","");
-
-
             
-            d.Price             = +PriceNumber;
+            d.Price             = +d.Price
             d.WeightGrams       = +d.WeightGrams;
             d.DiameterInches    = +d.DiameterInches;
             d.HorizontalPixels  = +d.HorizontalPixels;
             d.VerticalPixels    = +d.VerticalPixels;
             d.BrightnessNits    = +d.BrightnessNits;
             
-        
             d.PPI =  Math.round(hypotenuse(d.HorizontalPixels,d.VerticalPixels)/d.DiameterInches);
             
             d.Type = TypeSansSpace;
 
-
         });
-        /*
-        *  MIN AND MAX VALUES 
-        */
+
         var BrightnessAccessor = function(d){return d.BrightnessNits;},
             BrightnessExtent = [],
             BrightnessExtent = d3.extent(Data,BrightnessAccessor);
@@ -110,11 +134,10 @@ StatVisions, Copyright 2014, All Rights Reserved
         var ResolutionAccessor = function(d){return d.PPI;},
             ResolutionExtent = [],
             ResolutionExtent = d3.extent(Data,ResolutionAccessor);
-        /*
-        * CROSS FILTER, DIMENSIONS, GROUPS
-        */
-        var CrossFilter = crossfilter(Data),
-            TypeDimension = CrossFilter.dimension(function(d) { return d.Type;}),
+
+            CrossFilter = crossfilter(Data);
+
+        var TypeDimension = CrossFilter.dimension(function(d) { return d.Type;}),
             TypeGroup = TypeDimension.group(),
             CompanyDimension = CrossFilter.dimension(function(d) { return d.Company;}),
             CompanyGroup = CompanyDimension.group(),
@@ -123,56 +146,34 @@ StatVisions, Copyright 2014, All Rights Reserved
             BrightnessDimension = CrossFilter.dimension(function(d) { return +d.BrightnessNits}),
             BrightnessGroup = BrightnessDimension.group();
 
-        // ResolutionDimension.filter([100,200]);
-        
-        /*
-        * CHARTS
-        */
+        var chartWidth = parseInt(d3.select("figure").style("width"))*.45;
 
-        var chartWidth = parseInt(d3.select("div#sidebar").style("width"))*.45;
+        var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]);
 
-        var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]),
-
-        typeChart = dc.rowChart("#Type")
-        .dimension(TypeDimension)
+        typeChart.dimension(TypeDimension)
         .group(TypeGroup)
         .width(chartWidth)
-        .height(300)
-        .margins({top: 0, right: 0, bottom: -1, left: 0})
-        .colors(colorScaleType),
+        .height(chartWidth*1.5)
+        .margins({top: 20, right: 0, bottom: -1, left: 0})
+        .colors(colorScaleType);
    
-        colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]),
+        colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]);
 
-        CompanyChart = dc.rowChart("#Company")
-        .dimension(CompanyDimension)
+        companyChart.dimension(CompanyDimension)
         .group(CompanyGroup)
         .width(chartWidth)
-        .margins({top: 0, right: 0, bottom: -1, left: 0})
-        .colors(colorScaleCompany),
+        .height(chartWidth*1.5)
+        .margins({top: 20, right: 0, bottom: -1, left: 0})
+        .colors(colorScaleCompany);
 
         colorScaleResolution = d3.scale.linear()
         .domain([ResolutionExtent[0],ResolutionExtent[1]])
-        .range(["#9ecae1","#3182bd"]),
-
-        resolutionChart = dc.rowChart("#Resolution")
-        .dimension(ResolutionDimension)
-        .group(ResolutionGroup)
-        .width(chartWidth)
-        .margins({top: 0, right: 0, bottom: -1, left: 0})
-        .colors(colorScaleResolution), 
+        .range(["#9ecae1","#3182bd"]);
 
         colorScaleBrightness = d3.scale.linear()
         .domain([BrightnessExtent[0],BrightnessExtent[1]])
-        .range(["#fdae6b","#e6550d"]),
+        .range(["#fdae6b","#e6550d"]);
 
-        BrightnessChart = dc.rowChart("#Brightness")
-        .dimension(Brightness)
-        .group(BrightnessGroup)
-        .width(chartWidth)
-        .margins({top: 0, right: 0, bottom: -1, left: 0})
-        .colors(colorScaleBrightness),
-
-        // Data Table Field Names
         FieldNames = [
             "",
             "Resolution",
@@ -180,10 +181,6 @@ StatVisions, Copyright 2014, All Rights Reserved
             "Weight",
             "Brightness",
             "Screen"];
-            // "Model",
-            // "Availability",
-            // "Data Source 1", 
-            // "Data Source 2"]; 
 
         d3.select("tr#FieldNames").selectAll("th")
             .data(FieldNames)
@@ -203,50 +200,25 @@ StatVisions, Copyright 2014, All Rights Reserved
         function(d) {return d.WeightGrams;},
         function(d) {return d.BrightnessNits;},
         function(d) {return d.DiameterInches;}
-        // function(d) {return d.Model;},
-        // function(d) {return "<a href='" + d.PriceSource + "'>Buy Now</a>";},
-        // function(d) {return "<a href='" + d.DataSource01 + "'>url</a>";},
-        // function(d) {return "<a href='" + d.DataSource02 + "'>url</a>";}
         ]);
+
+        countWidget
+            .dimension(CrossFilter)
+            .group(CrossFilter.groupAll());
 
         dc.renderAll()
 
-
-
-
         function resize(){
             
-            var ChartWidth = parseInt(d3.select("div#sidebar").style("width"))*.45;
+            var ChartWidth = parseInt(d3.select("figure").style("width"))*.45;
             dc.renderAll();
-            d3.selectAll(".dc-chart g.row rect").attr("rx",8);
         };
 
         // run resize function when the window changes
         d3.select(window).on("resize",resize);
 
-        d3.selectAll(".dc-chart g.row rect").attr("rx",8);
-
-   // "item":"Samsung Galaxy Tab Pro 8.4",
-   //  "Company":"Samsung",
-   //  "type":"tablet",
-   //  "di":8.4,
-   //  "hp":1600,
-   //  "wp":2560,
-   //  "dp":3019,
-   //  "PPI":359,
-   //  "BrightnessNits":410,
-   //  "Model":"SM-T320NZWAXAR",
-   //  "data_source":"http://www.samsung.com/us/mobile/galaxy-tab/SM-T320NZWAXAR",
-   //  "collected_date":"06/10/14",
-   //  "data_source_Brightness":"http://www.phonearena.com/reviews/Samsung-Galaxy-Tab-PRO-8.4-Review_id3588"
- 
-
-
-
-
     });
 </script>
-
 </body>
 
 </html>
