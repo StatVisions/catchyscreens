@@ -13,6 +13,7 @@
         <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
         <link   type="text/css"        href="node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
         <script type="text/javascript" src="node_modules/colorbrewer/colorbrewer.js"></script>
+        <script type="text/javascript" src="uid3.v2.js"></script>
   
     </head>
 
@@ -66,6 +67,8 @@
           
           <div class="row" id="2">
 
+            <div class="slider" id="resolution" style="width:33em; height:7em;"></id>
+
           </div> <!-- end row 2 -->
 
           <div class="row" id="3">
@@ -96,6 +99,7 @@
     var typeChart = dc.rowChart("figure#chart1");
     var companyChart = dc.rowChart("figure#chart2");
     var countWidget = dc.dataCount("figure.dc-data-count");
+
     CrossFilter = {}; // no var so this should make it modifiable at function scope and global
 
     d3.csv('data/data.csv', function(Data){
@@ -146,6 +150,8 @@
             BrightnessDimension = CrossFilter.dimension(function(d) { return +d.BrightnessNits}),
             BrightnessGroup = BrightnessDimension.group();
 
+        var slider = ui2("div.slider#resolution").xDomain(d3.scale.linear().domain(ResolutionExtent)).render();
+
         var chartWidth = parseInt(d3.select("figure").style("width"))*.45;
 
         var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]);
@@ -173,6 +179,8 @@
         colorScaleBrightness = d3.scale.linear()
         .domain([BrightnessExtent[0],BrightnessExtent[1]])
         .range(["#fdae6b","#e6550d"]);
+
+        //font-family="Verdana" font-size="55" fill="blue"
 
         FieldNames = [
             "",
