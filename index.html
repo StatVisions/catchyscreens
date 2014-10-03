@@ -13,8 +13,10 @@
         <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
         <link   type="text/css"        href="node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
         <script type="text/javascript" src="node_modules/colorbrewer/colorbrewer.js"></script>
-        <script type="text/javascript" src="uid3.v2.js"></script>
-  
+        <link   type="text/css"        href="d3.slider/d3.slider.css" rel="stylesheet">
+        <script type="text/javascript" src="d3.slider/d3.slider.js"></script>
+   
+
     </head>
 
 <body>
@@ -66,8 +68,8 @@
             </div> <!-- end row 1 -->
           
           <div class="row" id="2">
-
-            <div class="slider" id="resolution" style="width:33em; height:7em;"></id>
+            <h3>Resolution <span id="slidertextmin"> </span> , <span id="slidertextmax"></span></h3>
+            <div id="slider" class="d3-slider d3-slider-horizontal" ></id>
 
           </div> <!-- end row 2 -->
 
@@ -96,20 +98,25 @@
      
 <script type="text/javascript">
 
-    var typeChart = dc.rowChart("figure#chart1");
-    var companyChart = dc.rowChart("figure#chart2");
+    // var typeChart = dc.rowChart("figure#chart1");
+    // var companyChart = dc.rowChart("figure#chart2");
+    var dataTable = dc.dataTable("#list");
     var countWidget = dc.dataCount("figure.dc-data-count");
-
-    CrossFilter = {}; // no var so this should make it modifiable at function scope and global
+    var dispatch = d3.dispatch("load","filter");
+    var CrossFilter = crossfilter();
+    var formatNumber = d3.format("d,");
+    function hypotenuse(w,h) {
+        var w = +w;
+        var h = +h;
+        var r = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
+        return r;
+    };
 
     d3.csv('data/data.csv', function(Data){
+        dispatch.load(Data);
+    });
 
-        function hypotenuse(w,h) {
-            var w = +w;
-            var h = +h;
-            var r = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
-            return r;
-        };
+    dispatch.on("load", function(Data) {
 
         Data.forEach(function(d){
 
@@ -131,6 +138,8 @@
 
         });
 
+            CrossFilter.add(Data);
+
         var BrightnessAccessor = function(d){return d.BrightnessNits;},
             BrightnessExtent = [],
             BrightnessExtent = d3.extent(Data,BrightnessAccessor);
@@ -138,8 +147,6 @@
         var ResolutionAccessor = function(d){return d.PPI;},
             ResolutionExtent = [],
             ResolutionExtent = d3.extent(Data,ResolutionAccessor);
-
-            CrossFilter = crossfilter(Data);
 
         var TypeDimension = CrossFilter.dimension(function(d) { return d.Type;}),
             TypeGroup = TypeDimension.group(),
@@ -149,36 +156,47 @@
             ResolutionGroup = ResolutionDimension.group(),
             BrightnessDimension = CrossFilter.dimension(function(d) { return +d.BrightnessNits}),
             BrightnessGroup = BrightnessDimension.group();
+        
+        //  try slider with dispatch /////////////////
 
-        var slider = ui2("div.slider#resolution").xDomain(d3.scale.linear().domain(ResolutionExtent)).render();
 
-        var chartWidth = parseInt(d3.select("figure").style("width"))*.45;
 
-        var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]);
+        d3.select('#slider').call(d3.slider().axis(true).min(ResolutionExtent[0]).max(ResolutionExtent[1])
+            .value(ResolutionExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                dispatch.filter(_newRange);
+                d3.select('span#slidertextmin').text(Math.floor(value[0]));
+                d3.select('span#slidertextmax').text(Math.floor(value[1]));
+            }));
 
-        typeChart.dimension(TypeDimension)
-        .group(TypeGroup)
-        .width(chartWidth)
-        .height(chartWidth*1.5)
-        .margins({top: 20, right: 0, bottom: -1, left: 0})
-        .colors(colorScaleType);
+        // var chartWidth = parseInt(d3.select("figure").style("width"))*.45;
+
+        // var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]);
+
+        // typeChart.dimension(TypeDimension)
+        // .group(TypeGroup)
+        // .width(chartWidth)
+        // .height(chartWidth*1.5)
+        // .margins({top: 20, right: 0, bottom: -1, left: 0})
+        // .colors(colorScaleType);
    
-        colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]);
+        // colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]);
 
-        companyChart.dimension(CompanyDimension)
-        .group(CompanyGroup)
-        .width(chartWidth)
-        .height(chartWidth*1.5)
-        .margins({top: 20, right: 0, bottom: -1, left: 0})
-        .colors(colorScaleCompany);
+        // companyChart.dimension(CompanyDimension)
+        // .group(CompanyGroup)
+        // .width(chartWidth)
+        // .height(chartWidth*1.5)
+        // .margins({top: 20, right: 0, bottom: -1, left: 0})
+        // .colors(colorScaleCompany);
 
-        colorScaleResolution = d3.scale.linear()
-        .domain([ResolutionExtent[0],ResolutionExtent[1]])
-        .range(["#9ecae1","#3182bd"]);
+        // colorScaleResolution = d3.scale.linear()
+        // .domain([ResolutionExtent[0],ResolutionExtent[1]])
+        // .range(["#9ecae1","#3182bd"]);
 
-        colorScaleBrightness = d3.scale.linear()
-        .domain([BrightnessExtent[0],BrightnessExtent[1]])
-        .range(["#fdae6b","#e6550d"]);
+        // colorScaleBrightness = d3.scale.linear()
+        // .domain([BrightnessExtent[0],BrightnessExtent[1]])
+        // .range(["#fdae6b","#e6550d"]);
 
         //font-family="Verdana" font-size="55" fill="blue"
 
@@ -198,8 +216,8 @@
             .text(function(d){ return d;});
 
 
-        list = dc.dataTable("#list")
-        .dimension(TypeDimension)
+        dataTable
+        .dimension(ResolutionDimension)
         .group(function(d) {return d.Type;})
         .columns([
         function(d) {return d.Item;},
@@ -210,20 +228,26 @@
         function(d) {return d.DiameterInches;}
         ]);
 
+        dispatch.on("filter", function(value) {
+               console.log(value);
+               dataTable.replaceFilter(value);
+               dataTable.redraw();
+        });
+
         countWidget
             .dimension(CrossFilter)
             .group(CrossFilter.groupAll());
 
         dc.renderAll()
 
-        function resize(){
+        // function resize(){
             
-            var ChartWidth = parseInt(d3.select("figure").style("width"))*.45;
-            dc.renderAll();
-        };
+        //     var ChartWidth = parseInt(d3.select("figure").style("width"))*.45;
+        //     dc.renderAll();
+        // };
 
-        // run resize function when the window changes
-        d3.select(window).on("resize",resize);
+        // // run resize function when the window changes
+        // d3.select(window).on("resize",resize);
 
     });
 </script>
