@@ -60,8 +60,8 @@
 
                     </figure>
 
-                   <figure id="chart2" class="dc-chart col-md-6">
-                        <a class="reset" href="javascript:companyChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                   <figure id="chart2" class="dc-chart col-md-6" style="display:none;">
+                        <a class="reset" href="javascript:resolutionChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
 
                     </figure>
 
@@ -78,7 +78,7 @@
                 <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
                     
                     <span class="filter-count"></span> selected out of <span class="total-count"></span> records | 
-                    <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a>
+                    <a href="javascript:dc.filterAll(); dc.renderAll();" style="display:none;">Reset</a>
                 
                 </figure>
 
@@ -98,8 +98,8 @@
      
 <script type="text/javascript">
 
-    // var typeChart = dc.rowChart("figure#chart1");
-    // var companyChart = dc.rowChart("figure#chart2");
+    var typeChart = dc.rowChart("figure#chart1");
+    var resolutionChart = dc.barChart("figure#chart2");
     var dataTable = dc.dataTable("#list");
     var countWidget = dc.dataCount("figure.dc-data-count");
     var dispatch = d3.dispatch("load","filter");
@@ -161,7 +161,7 @@
 
 
 
-        d3.select('#slider').call(d3.slider().axis(true).min(ResolutionExtent[0]).max(ResolutionExtent[1])
+        d3.select('#slider').call(d3.slider().axis(true).min(ResolutionExtent[0]-1).max(1+ResolutionExtent[1])
             .value(ResolutionExtent)
             .on("slide", function(evt, value) {
                 var _newRange = dc.filters.RangedFilter(value[0],value[1]);
@@ -170,33 +170,35 @@
                 d3.select('span#slidertextmax').text(Math.floor(value[1]));
             }));
 
-        // var chartWidth = parseInt(d3.select("figure").style("width"))*.45;
+        var chartWidth = parseInt(d3.select("figure").style("width"))*.45;
 
-        // var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]);
+        var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]);
 
-        // typeChart.dimension(TypeDimension)
-        // .group(TypeGroup)
-        // .width(chartWidth)
-        // .height(chartWidth*1.5)
-        // .margins({top: 20, right: 0, bottom: -1, left: 0})
-        // .colors(colorScaleType);
+        typeChart.dimension(TypeDimension)
+        .group(TypeGroup)
+        .width(chartWidth)
+        .height(chartWidth*1.5)
+        .margins({top: 20, right: 0, bottom: -1, left: 0})
+        .colors(colorScaleType);
    
-        // colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]);
+        colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]);
 
-        // companyChart.dimension(CompanyDimension)
-        // .group(CompanyGroup)
-        // .width(chartWidth)
-        // .height(chartWidth*1.5)
-        // .margins({top: 20, right: 0, bottom: -1, left: 0})
-        // .colors(colorScaleCompany);
+        resolutionChart
+            .height(chartWidth*1.5)
+            .width(chartWidth)
+            .dimension(ResolutionDimension)
+            .group(ResolutionGroup)
+            .x(d3.scale.linear().domain(ResolutionExtent))
+            .elasticY(true);
+      
+       
+        colorScaleResolution = d3.scale.linear()
+        .domain([ResolutionExtent[0],ResolutionExtent[1]])
+        .range(["#9ecae1","#3182bd"]);
 
-        // colorScaleResolution = d3.scale.linear()
-        // .domain([ResolutionExtent[0],ResolutionExtent[1]])
-        // .range(["#9ecae1","#3182bd"]);
-
-        // colorScaleBrightness = d3.scale.linear()
-        // .domain([BrightnessExtent[0],BrightnessExtent[1]])
-        // .range(["#fdae6b","#e6550d"]);
+        colorScaleBrightness = d3.scale.linear()
+        .domain([BrightnessExtent[0],BrightnessExtent[1]])
+        .range(["#fdae6b","#e6550d"]);
 
         //font-family="Verdana" font-size="55" fill="blue"
 
@@ -230,8 +232,11 @@
 
         dispatch.on("filter", function(value) {
                console.log(value);
-               dataTable.replaceFilter(value);
+               resolutionChart.replaceFilter(value);
+               resolutionChart.redraw();
                dataTable.redraw();
+               typeChart.redraw();
+               countWidget.redraw();
         });
 
         countWidget
