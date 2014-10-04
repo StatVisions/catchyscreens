@@ -53,46 +53,46 @@
 
         <div class="jumbotron">
 
-            <div class="row" id="1">
 
+
+            <div class="row" id="1">
                     <figure id="chart1" class="dc-chart col-md-6">
                         <a class="reset" href="javascript:typeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-
                     </figure>
-
                    <figure id="chart2" class="dc-chart col-md-6" style="display:none;">
                         <a class="reset" href="javascript:resolutionChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-
                     </figure>
-
             </div> <!-- end row 1 -->
-          
-          <div class="row" id="2">
-            <h3>Resolution <span id="slidertextmin"> </span> , <span id="slidertextmax"></span></h3>
-            <div id="slider" class="d3-slider d3-slider-horizontal" ></id>
+            
 
+
+          <div class="row" id="2">
+            <h3>Resolution <span id="sliderResolutiontextmin"> </span> , <span id="sliderResolutiontextmax"></span></h3>
+            <div id="sliderResolution" class="d3-slider d3-slider-horizontal col-md-12" ></id>
           </div> <!-- end row 2 -->
+          
+
+
 
           <div class="row" id="3">
-
                 <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
-                    
                     <span class="filter-count"></span> selected out of <span class="total-count"></span> records | 
                     <a href="javascript:dc.filterAll(); dc.renderAll();" style="display:none;">Reset</a>
-                
                 </figure>
-
           </div> <!-- end row 3 -->
+
+
 
           <div class="row" id="4">
 
-                <table id="list" class="table table-hover dc-data-table dc-chart col-md-4" style="margin-top:5%;">
+                <table id="list" class="table table-hover dc-data-table dc-chart col-md-12" style="margin-top:5%;">
                     <thead>
                         <tr id="FieldNames" class="header" style="text-align:left;"></tr>
                     </thead>
                 </table> 
-
           </div> <!-- end row 4 -->
+
+
         </div> <!-- end jumbotron -->
     </div> <!-- end container -->
      
@@ -103,72 +103,52 @@
     var dataTable = dc.dataTable("#list");
     var countWidget = dc.dataCount("figure.dc-data-count");
     var dispatch = d3.dispatch("load","filter");
-    var CrossFilter = crossfilter();
+    
+    var xf = crossfilter();
     var formatNumber = d3.format("d,");
-    function hypotenuse(w,h) {
-        var w = +w;
-        var h = +h;
-        var r = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
-        return r;
-    };
 
     d3.csv('data/data.csv', function(Data){
         dispatch.load(Data);
     });
 
     dispatch.on("load", function(Data) {
-
-        Data.forEach(function(d){
-
-            var TypeString = d.Type;
-            var TypeSansSpace = TypeString.toLowerCase()
-                .replace("desktop","")
-                .replace(" ","");
             
-            d.Price             = +d.Price
-            d.WeightGrams       = +d.WeightGrams;
-            d.DiameterInches    = +d.DiameterInches;
-            d.HorizontalPixels  = +d.HorizontalPixels;
-            d.VerticalPixels    = +d.VerticalPixels;
-            d.BrightnessNits    = +d.BrightnessNits;
+            goData(Data);
             
-            d.PPI =  Math.round(hypotenuse(d.HorizontalPixels,d.VerticalPixels)/d.DiameterInches);
-            
-            d.Type = TypeSansSpace;
+            xf.add(Data);
 
-        });
+        var BrightnessExtent = d3.extent(Data,function(d){return d.BrightnessNits;});
 
-            CrossFilter.add(Data);
+        var ResolutionExtent = d3.extent(Data,function(d){return d.PPI;});
 
-        var BrightnessAccessor = function(d){return d.BrightnessNits;},
-            BrightnessExtent = [],
-            BrightnessExtent = d3.extent(Data,BrightnessAccessor);
-
-        var ResolutionAccessor = function(d){return d.PPI;},
-            ResolutionExtent = [],
-            ResolutionExtent = d3.extent(Data,ResolutionAccessor);
-
-        var TypeDimension = CrossFilter.dimension(function(d) { return d.Type;}),
+        var TypeDimension = xf.dimension(function(d) { return d.Type;}),
             TypeGroup = TypeDimension.group(),
-            CompanyDimension = CrossFilter.dimension(function(d) { return d.Company;}),
+            CompanyDimension = xf.dimension(function(d) { return d.Company;}),
             CompanyGroup = CompanyDimension.group(),
-            ResolutionDimension = CrossFilter.dimension(function(d) { return d.PPI;}),
+            ResolutionDimension = xf.dimension(function(d) { return d.PPI;}),
             ResolutionGroup = ResolutionDimension.group(),
-            BrightnessDimension = CrossFilter.dimension(function(d) { return +d.BrightnessNits}),
-            BrightnessGroup = BrightnessDimension.group();
-        
-        //  try slider with dispatch /////////////////
+            BrightnessDimension = xf.dimension(function(d) { return +d.BrightnessNits}),
+            BrightnessGroup = BrightnessDimension.group();      
 
-
-
-        d3.select('#slider').call(d3.slider().axis(true).min(ResolutionExtent[0]-1).max(1+ResolutionExtent[1])
+        d3.select('#sliderResolution').call(d3.slider().axis(true).min(ResolutionExtent[0]-1).max(1+ResolutionExtent[1])
             .value(ResolutionExtent)
             .on("slide", function(evt, value) {
                 var _newRange = dc.filters.RangedFilter(value[0],value[1]);
                 dispatch.filter(_newRange);
-                d3.select('span#slidertextmin').text(Math.floor(value[0]));
-                d3.select('span#slidertextmax').text(Math.floor(value[1]));
+                d3.select('span#sliderResolutiontextmin').text(Math.floor(value[0]));
+                d3.select('span#sliderResolutiontextmax').text(Math.floor(value[1]));
             }));
+
+        goSlide = function(_selection,_extent) {
+            d3.select(_selection).call(d3.slider().axis(true).min(_extent[0]-1).max(1+_extent[1])
+                .value(_extent)
+                .on("slide", function(evt, value) {
+                    var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                    dispatch.filter(_newRange); // <- needs to dispatch to the correct filter. currently assumes resolution
+                }));
+        };
+
+        goSlide('#sliderPrice',d3.extent(Data,function(d){return d.Price;}););
 
         var chartWidth = parseInt(d3.select("figure").style("width"))*.45;
 
@@ -190,17 +170,7 @@
             .group(ResolutionGroup)
             .x(d3.scale.linear().domain(ResolutionExtent))
             .elasticY(true);
-      
-       
-        colorScaleResolution = d3.scale.linear()
-        .domain([ResolutionExtent[0],ResolutionExtent[1]])
-        .range(["#9ecae1","#3182bd"]);
 
-        colorScaleBrightness = d3.scale.linear()
-        .domain([BrightnessExtent[0],BrightnessExtent[1]])
-        .range(["#fdae6b","#e6550d"]);
-
-        //font-family="Verdana" font-size="55" fill="blue"
 
         FieldNames = [
             "",
@@ -232,16 +202,16 @@
 
         dispatch.on("filter", function(value) {
                console.log(value);
-               resolutionChart.replaceFilter(value);
-               resolutionChart.redraw();
+               dataTable.replaceFilter(value);
+               // resolutionChart.redraw();
                dataTable.redraw();
                typeChart.redraw();
                countWidget.redraw();
         });
 
         countWidget
-            .dimension(CrossFilter)
-            .group(CrossFilter.groupAll());
+            .dimension(xf)
+            .group(xf.groupAll());
 
         dc.renderAll()
 
@@ -255,6 +225,31 @@
         // d3.select(window).on("resize",resize);
 
     });
+    
+    function hypotenuse(w,h) {
+        var w = +w;
+        var h = +h;
+        var r = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
+        return r;
+    };
+    
+    function goData(Data) {
+        Data.forEach(function(d){
+            var TypeString = d.Type;
+            var TypeSansSpace = TypeString.toLowerCase()
+                .replace("desktop","")
+                .replace(" ","");
+            d.Price             = +d.Price
+            d.WeightGrams       = +d.WeightGrams;
+            d.DiameterInches    = +d.DiameterInches;
+            d.HorizontalPixels  = +d.HorizontalPixels;
+            d.VerticalPixels    = +d.VerticalPixels;
+            d.BrightnessNits    = +d.BrightnessNits;
+            d.PPI =  Math.round(hypotenuse(d.HorizontalPixels,d.VerticalPixels)/d.DiameterInches);
+            d.Type = TypeSansSpace;
+        });
+        return Data;
+    }
 </script>
 </body>
 
