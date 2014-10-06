@@ -19,6 +19,14 @@
 
     </head>
 
+<style>
+img.thumb {
+    width:75px;
+    height:auto;
+}
+
+</style>
+
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 
@@ -53,44 +61,68 @@
 
         <div class="jumbotron">
 
-
-
             <div class="row" id="1">
-                    <figure id="chart1" class="dc-chart col-md-6">
+                    <figure id="chart1" class="dc-chart col-md-6" style="display: none;">
                         <a class="reset" href="javascript:typeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
                     </figure>
-                   <figure id="chart2" class="dc-chart col-md-6" style="display:none;">
+                    <figure id="chart2" class="dc-chart col-md-6" style="display: none;">
                         <a class="reset" href="javascript:resolutionChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
                     </figure>
+                    <figure id="chart3" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:priceChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>
+                    <figure id="chart4" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:weightChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>
+                    <figure id="chart5" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:sizeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>
+                    <figure id="chart6" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:brightnessChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>                                                          
             </div> <!-- end row 1 -->
             
-
-
-          <div class="row" id="2">
-            <h3>Resolution <span id="sliderResolutiontextmin"> </span> , <span id="sliderResolutiontextmax"></span></h3>
-            <div id="sliderResolution" class="d3-slider d3-slider-horizontal col-md-12" ></id>
-          </div> <!-- end row 2 -->
+            <div class="row" id="2">
+                <h3>Price <span id="sliderPricetextmin"> </span> , <span id="sliderPricetextmax"></span></h3>
+                <div id="sliderPrice" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 2 -->
           
 
+            <div class="row" id="3">
+                <h3>Resolution <span id="sliderResolutiontextmin"> </span> , <span id="sliderResolutiontextmax"></span></h3>
+                <div id="sliderResolution" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 3 -->
 
+            <div class="row" id="4">
+                <h3>Weight <span id="sliderWeighttextmin"> </span> , <span id="sliderWeighttextmax"></span></h3>
+                <div id="sliderWeight" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 4 -->
 
-          <div class="row" id="3">
-                <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
-                    <span class="filter-count"></span> selected out of <span class="total-count"></span> records | 
-                    <a href="javascript:dc.filterAll(); dc.renderAll();" style="display:none;">Reset</a>
-                </figure>
-          </div> <!-- end row 3 -->
+            <div class="row" id="5">
+                <h3>Size <span id="sliderSizetextmin"> </span> , <span id="sliderSizetextmax"></span></h3>
+                <div id="sliderSize" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 5 -->
 
+            <div class="row" id="6">
+                <h3>Brightness <span id="sliderBrightnesstextmin"> </span> , <span id="sliderBrightnesstextmax"></span></h3>
 
+                <div id="sliderBrightness" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 6 -->
 
-          <div class="row" id="4">
+          
+            <div class="row" id="7">
+<!--                 <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
+                <span class="filter-count"></span> selected out of <span class="total-count"></span> records 
+                </figure> -->
+            </div> <!-- end row 7 -->
 
+            <div class="row" id="8">
                 <table id="list" class="table table-hover dc-data-table dc-chart col-md-12" style="margin-top:5%;">
                     <thead>
                         <tr id="FieldNames" class="header" style="text-align:left;"></tr>
                     </thead>
                 </table> 
-          </div> <!-- end row 4 -->
+            </div> <!-- end row 8 -->
 
 
         </div> <!-- end jumbotron -->
@@ -98,10 +130,15 @@
      
 <script type="text/javascript">
 
-    var typeChart = dc.rowChart("figure#chart1");
+    // var typeChart = dc.rowChart("figure#chart1");
     var resolutionChart = dc.barChart("figure#chart2");
+    var priceChart = dc.barChart("figure#chart3");
+    var weightChart = dc.barChart("figure#chart4");
+    var sizeChart = dc.barChart("figure#chart5");
+    var brightnessChart = dc.barChart("figure#chart6");
+
     var dataTable = dc.dataTable("#list");
-    var countWidget = dc.dataCount("figure.dc-data-count");
+    // var countWidget = dc.dataCount("figure.dc-data-count");
     var dispatch = d3.dispatch("load","filter");
     
     var xf = crossfilter();
@@ -117,60 +154,145 @@
             
             xf.add(Data);
 
-        var BrightnessExtent = d3.extent(Data,function(d){return d.BrightnessNits;});
+        var BrightnessExtent = d3.extent(Data,function(d){return d.BrightnessNits;}),
+            PriceExtent = d3.extent(Data,function(d){return d.Price;}),
+            ResolutionExtent = d3.extent(Data,function(d){return d.PPI;}),
+            SizeExtent = d3.extent(Data,function(d){return d.DiameterInches;}),
+            WeightExtent = d3.extent(Data,function(d){return d.WeightGrams;});
 
-        var ResolutionExtent = d3.extent(Data,function(d){return d.PPI;});
-
-        var TypeDimension = xf.dimension(function(d) { return d.Type;}),
-            TypeGroup = TypeDimension.group(),
-            CompanyDimension = xf.dimension(function(d) { return d.Company;}),
+        var CompanyDimension = xf.dimension(function(d) { return d.Company;}),
             CompanyGroup = CompanyDimension.group(),
+
+            BrightnessDimension = xf.dimension(function(d) { return d.BrightnessNits}),
+            BrightnessGroup = BrightnessDimension.group(),
+
+            PriceDimension = xf.dimension(function(d){ return d.Price;}),
+            PriceGroup = PriceDimension.group();
+
             ResolutionDimension = xf.dimension(function(d) { return d.PPI;}),
             ResolutionGroup = ResolutionDimension.group(),
-            BrightnessDimension = xf.dimension(function(d) { return +d.BrightnessNits}),
-            BrightnessGroup = BrightnessDimension.group();      
 
-        d3.select('#sliderResolution').call(d3.slider().axis(true).min(ResolutionExtent[0]-1).max(1+ResolutionExtent[1])
+            SizeDimension = xf.dimension(function(d){ return d.DiameterInches;}),
+            SizeGroup = SizeDimension.group(),
+            
+            TypeDimension = xf.dimension(function(d) { return d.Type;}),
+            TypeGroup = TypeDimension.group(),
+
+            WeightDimension = xf.dimension(function(d){return d.WeightGrams;}),
+            WeightGroup = WeightDimension.group();   
+
+        d3.select('span#sliderPricetextmin').text(formatNumber(Math.floor(PriceExtent[0])));
+        d3.select('span#sliderPricetextmax').text(formatNumber(Math.floor(PriceExtent[1])));
+
+        d3.select('span#sliderResolutiontextmin').text(Math.floor(ResolutionExtent[0]));
+        d3.select('span#sliderResolutiontextmax').text(Math.floor(ResolutionExtent[1]));
+
+        d3.select('span#sliderWeighttextmin').text(Math.floor(WeightExtent[0]));
+        d3.select('span#sliderWeighttextmax').text(Math.floor(WeightExtent[1]));
+
+        d3.select('span#sliderSizetextmin').text(Math.floor(SizeExtent[0]));
+        d3.select('span#sliderSizetextmax').text(Math.floor(SizeExtent[1]));
+
+        d3.select('span#sliderBrightnesstextmin').text(Math.floor(BrightnessExtent[0]));
+        d3.select('span#sliderBrightnesstextmax').text(Math.floor(BrightnessExtent[1]));
+
+        d3.select('#sliderPrice').call(d3.slider().axis(false).min(PriceExtent[0]-2).max(2+PriceExtent[1])
+            .value(PriceExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                dispatch.filter(_newRange,priceChart);
+                d3.select('span#sliderPricetextmin').text(formatNumber(Math.floor(value[0])));
+                d3.select('span#sliderPricetextmax').text(formatNumber(Math.floor(value[1])));
+            }));
+
+        d3.select('#sliderResolution').call(d3.slider().axis(false).min(ResolutionExtent[0]-5).max(5+ResolutionExtent[1])
             .value(ResolutionExtent)
             .on("slide", function(evt, value) {
                 var _newRange = dc.filters.RangedFilter(value[0],value[1]);
-                dispatch.filter(_newRange);
+                dispatch.filter(_newRange,resolutionChart);
                 d3.select('span#sliderResolutiontextmin').text(Math.floor(value[0]));
                 d3.select('span#sliderResolutiontextmax').text(Math.floor(value[1]));
-            }));
+        }));
 
-        goSlide = function(_selection,_extent) {
-            d3.select(_selection).call(d3.slider().axis(true).min(_extent[0]-1).max(1+_extent[1])
-                .value(_extent)
-                .on("slide", function(evt, value) {
-                    var _newRange = dc.filters.RangedFilter(value[0],value[1]);
-                    dispatch.filter(_newRange); // <- needs to dispatch to the correct filter. currently assumes resolution
-                }));
-        };
+        d3.select('#sliderWeight').call(d3.slider().axis(false).min(WeightExtent[0]-5).max(5+WeightExtent[1])
+            .value(WeightExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                dispatch.filter(_newRange,weightChart);
+                d3.select('span#sliderWeighttextmin').text(Math.floor(value[0]));
+                d3.select('span#sliderWeighttextmax').text(Math.floor(value[1]));
+        }));
 
-        goSlide('#sliderPrice',d3.extent(Data,function(d){return d.Price;}););
+        d3.select('#sliderSize').call(d3.slider().axis(false).min(SizeExtent[0]).max(2+SizeExtent[1])
+            .value(SizeExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                dispatch.filter(_newRange,sizeChart);
+                d3.select('span#sliderSizetextmin').text(Math.floor(value[0]));
+                d3.select('span#sliderSizetextmax').text(Math.floor(value[1]));
+        }));
+
+        d3.select('#sliderBrightness').call(d3.slider().axis(false).min(BrightnessExtent[0]-5).max(5+BrightnessExtent[1])
+            .value(BrightnessExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                dispatch.filter(_newRange,brightnessChart);
+                d3.select('span#sliderBrightnesstextmin').text(Math.floor(value[0]));
+                d3.select('span#sliderBrightnesstextmax').text(Math.floor(value[1]));
+        }));
 
         var chartWidth = parseInt(d3.select("figure").style("width"))*.45;
 
         var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]);
 
-        typeChart.dimension(TypeDimension)
-        .group(TypeGroup)
-        .width(chartWidth)
-        .height(chartWidth*1.5)
-        .margins({top: 20, right: 0, bottom: -1, left: 0})
-        .colors(colorScaleType);
+        // typeChart.dimension(TypeDimension)
+        // .group(TypeGroup)
+        // .width(chartWidth)
+        // .height(chartWidth*1.5)
+        // .margins({top: 20, right: 0, bottom: -1, left: 0})
+        // .colors(colorScaleType);
    
-        colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]);
+        // colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]);
 
         resolutionChart
-            .height(chartWidth*1.5)
+            .height(chartWidth)
             .width(chartWidth)
             .dimension(ResolutionDimension)
             .group(ResolutionGroup)
             .x(d3.scale.linear().domain(ResolutionExtent))
             .elasticY(true);
 
+        priceChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(PriceDimension)
+            .group(PriceGroup)
+            .x(d3.scale.linear().domain(PriceExtent))
+            .elasticY(true);
+
+        weightChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(WeightDimension)
+            .group(WeightGroup)
+            .x(d3.scale.linear().domain(WeightExtent))
+            .elasticY(true);
+
+        sizeChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(SizeDimension)
+            .group(SizeGroup)
+            .x(d3.scale.linear().domain(SizeExtent))
+            .elasticY(true);
+
+        brightnessChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(BrightnessDimension)
+            .group(BrightnessGroup)
+            .x(d3.scale.linear().domain(BrightnessExtent))
+            .elasticY(true);
 
         FieldNames = [
             "",
@@ -193,25 +315,24 @@
         .group(function(d) {return d.Type;})
         .columns([
         function(d) {return d.Item;},
-        function(d) {return d.PPI;},
+        function(d) {return d.PPI},
         function(d) {return d.Price;},
         function(d) {return d.WeightGrams;},
         function(d) {return d.BrightnessNits;},
-        function(d) {return d.DiameterInches;}
+        function(d) {return d.DiameterInches;},
+        function(d) {return "<img src=img\\" + d.AmazonName + ".jpg class=\"thumb\">";}
         ]);
 
-        dispatch.on("filter", function(value) {
-               console.log(value);
-               dataTable.replaceFilter(value);
-               // resolutionChart.redraw();
-               dataTable.redraw();
-               typeChart.redraw();
-               countWidget.redraw();
+        dispatch.on("filter", function(value,_chart) {
+               _chart.replaceFilter(value);
+               dc.renderAll()
         });
 
-        countWidget
-            .dimension(xf)
-            .group(xf.groupAll());
+
+
+        // countWidget
+        //     .dimension(xf)
+        //     .group(xf.groupAll());
 
         dc.renderAll()
 
