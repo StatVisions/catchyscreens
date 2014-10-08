@@ -87,28 +87,28 @@ td.dc-table-label {
             </div> <!-- end row 1 -->
             
             <div class="row" id="2">
-                <h5>Price ($) <span id="sliderPricetextmin"> </span> , <span id="sliderPricetextmax"></span></h5>
+                <h5>Price <span id="sliderPricetextmin"> </span> , <span id="sliderPricetextmax"></span></h5>
                 <div id="sliderPrice" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 2 -->
           
 
             <div class="row" id="3">
-                <h5>Resolution (PPI) <span id="sliderResolutiontextmin"> </span> , <span id="sliderResolutiontextmax"></span></h5>
+                <h5>Resolution <span id="sliderResolutiontextmin"> </span> , <span id="sliderResolutiontextmax"></span></h5>
                 <div id="sliderResolution" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 3 -->
 
             <div class="row" id="4">
-                <h5>Weight (gm) <span id="sliderWeighttextmin"> </span> , <span id="sliderWeighttextmax"></span></h5>
+                <h5>Weight <span id="sliderWeighttextmin"> </span> , <span id="sliderWeighttextmax"></span></h5>
                 <div id="sliderWeight" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 4 -->
 
             <div class="row" id="5">
-                <h5>Size (in) <span id="sliderSizetextmin"> </span> , <span id="sliderSizetextmax"></span></h5>
+                <h5>Size <span id="sliderSizetextmin"> </span> , <span id="sliderSizetextmax"></span></h5>
                 <div id="sliderSize" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 5 -->
 
             <div class="row" id="6">
-                <h5>Brightness (nits) <span id="sliderBrightnesstextmin"> </span> , <span id="sliderBrightnesstextmax"></span></h5>
+                <h5>Brightness <span id="sliderBrightnesstextmin"> </span> , <span id="sliderBrightnesstextmax"></span></h5>
 
                 <div id="sliderBrightness" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 6 -->
@@ -185,15 +185,7 @@ td.dc-table-label {
             WeightDimension = xf.dimension(function(d){return d.WeightGrams;}),
             WeightGroup = WeightDimension.group();  
 
-            //
-
-            xf.BrightnessDimension =  BrightnessDimension;
-            xf.BrightnessGroup = BrightnessGroup;
-
             
-
-
-
 
 
         d3.select('span#sliderPricetextmin').text(formatNumber(Math.floor(PriceExtent[0])));
@@ -311,20 +303,22 @@ td.dc-table-label {
             .elasticY(true);
 
         FieldNames = [
-            "",
-            "Count",
-            "Resolution",
-            "Price",
-            "Weight",
-            "Brightness",
-            "Screen"];
+            ["",],
+            ["Resolution","PPI"],
+            ["Price","Price"],
+            ["Weight","WeightGrams"],
+            ["Brightness","BrightnessNits"],
+            ["Screen","DiameterInches"]];
 
         d3.select("tr#FieldNames").selectAll("th")
             .data(FieldNames)
             .enter()
-            .append("th") 
+            .append("th")
+            .append("a")
+            .attr("href",function(d){ 
+                return "javascript:dataTable.sortBy(function(d){return d." + d[1]+"});dataTable.redraw()"}) 
             .append("text")
-            .text(function(d){ return d;});
+            .text(function(d){ return d[0];});
 
 
         dataTable
@@ -332,11 +326,10 @@ td.dc-table-label {
         .group(function(d) {return d.Type;})
         .size(Infinity)
         .columns([
-        function(d,i) {return i + 1;},
         function(d) {return d.Item;},
         function(d) {return d.PPI},
-        function(d) {return d.Price;},
-        function(d) {return d.WeightGrams;},
+        function(d) {return formatNumber(Math.floor(d.Price));},
+        function(d) {return formatNumber(Math.floor(d.WeightGrams));},
         function(d) {return d.BrightnessNits;},
         function(d) {return d.DiameterInches;},
         function(d) {return "<img src=img\\" + d.AmazonName + ".jpg class=\"thumb\">";}
