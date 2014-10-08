@@ -115,9 +115,9 @@ td.dc-table-label {
 
           
             <div class="row" id="7">
-<!--                 <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
+                <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
                 <span class="filter-count"></span> selected out of <span class="total-count"></span> records 
-                </figure> -->
+                </figure>
             </div> <!-- end row 7 -->
 
             <div class="row" id="8">
@@ -144,27 +144,25 @@ td.dc-table-label {
     var brightnessChart = dc.barChart("figure#chart6");
 
     var dataTable = dc.dataTable("#list");
-    // var countWidget = dc.dataCount("figure.dc-data-count");
-    var dispatch = d3.dispatch("load","filter");
+    var countWidget = dc.dataCount("figure.dc-data-count");
+    var dispatch = d3.dispatch("load","filter","render");
     
     var xf = crossfilter();
     var formatNumber = d3.format(",d");
 
     d3.csv('data/data.csv', function(Data){
-        dispatch.load(Data);
+        goData(Data);
     });
 
     dispatch.on("load", function(Data) {
             
-            goData(Data);
-            
             xf.add(Data);
 
-        var BrightnessExtent = d3.extent(Data,function(d){return d.BrightnessNits;}),
-            PriceExtent = d3.extent(Data,function(d){return d.Price;}),
-            ResolutionExtent = d3.extent(Data,function(d){return d.PPI;}),
-            SizeExtent = d3.extent(Data,function(d){return d.DiameterInches;}),
-            WeightExtent = d3.extent(Data,function(d){return d.WeightGrams;});
+        var BrightnessExtent = d3.extent(Data,function(d){return +d.BrightnessNits;}),
+            PriceExtent = d3.extent(Data,function(d){return +d.Price;}),
+            ResolutionExtent = d3.extent(Data,function(d){return +d.PPI;}),
+            SizeExtent = d3.extent(Data,function(d){return +d.DiameterInches;}),
+            WeightExtent = d3.extent(Data,function(d){return +d.WeightGrams;});
 
         var CompanyDimension = xf.dimension(function(d) { return d.Company;}),
             CompanyGroup = CompanyDimension.group(),
@@ -185,7 +183,18 @@ td.dc-table-label {
             TypeGroup = TypeDimension.group(),
 
             WeightDimension = xf.dimension(function(d){return d.WeightGrams;}),
-            WeightGroup = WeightDimension.group();   
+            WeightGroup = WeightDimension.group();  
+
+            //
+
+            xf.BrightnessDimension =  BrightnessDimension;
+            xf.BrightnessGroup = BrightnessGroup;
+
+            
+
+
+
+
 
         d3.select('span#sliderPricetextmin').text(formatNumber(Math.floor(PriceExtent[0])));
         d3.select('span#sliderPricetextmax').text(formatNumber(Math.floor(PriceExtent[1])));
@@ -203,52 +212,52 @@ td.dc-table-label {
         d3.select('span#sliderBrightnesstextmin').text(Math.floor(BrightnessExtent[0]));
         d3.select('span#sliderBrightnesstextmax').text(Math.floor(BrightnessExtent[1]));
 
-        d3.select('#sliderPrice').call(d3.slider().axis(false).min(PriceExtent[0]-2).max(2+PriceExtent[1])
+        d3.select('#sliderPrice').call(d3.slider().axis(false).min(PriceExtent[0]).max(PriceExtent[1])
             .value(PriceExtent)
             .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
                 dispatch.filter(_newRange,priceChart);
                 d3.select('span#sliderPricetextmin').text(formatNumber(Math.floor(value[0])));
                 d3.select('span#sliderPricetextmax').text(formatNumber(Math.floor(value[1])));
             }));
 
-        d3.select('#sliderResolution').call(d3.slider().axis(false).min(ResolutionExtent[0]-5).max(5+ResolutionExtent[1])
+        d3.select('#sliderResolution').call(d3.slider().axis(false).min(ResolutionExtent[0]).max(ResolutionExtent[1])
             .value(ResolutionExtent)
             .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
                 dispatch.filter(_newRange,resolutionChart);
                 d3.select('span#sliderResolutiontextmin').text(Math.floor(value[0]));
                 d3.select('span#sliderResolutiontextmax').text(Math.floor(value[1]));
         }));
 
-        d3.select('#sliderWeight').call(d3.slider().axis(false).min(WeightExtent[0]-5).max(5+WeightExtent[1])
+        d3.select('#sliderWeight').call(d3.slider().axis(false).min(WeightExtent[0]).max(WeightExtent[1])
             .value(WeightExtent)
             .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
                 dispatch.filter(_newRange,weightChart);
                 d3.select('span#sliderWeighttextmin').text(formatNumber(Math.floor(value[0])));
                 d3.select('span#sliderWeighttextmax').text(formatNumber(Math.floor(value[1])));
         }));
 
-        d3.select('#sliderSize').call(d3.slider().axis(false).min(SizeExtent[0]).max(2+SizeExtent[1])
+        d3.select('#sliderSize').call(d3.slider().axis(false).min(SizeExtent[0]).max(SizeExtent[1])
             .value(SizeExtent)
             .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
                 dispatch.filter(_newRange,sizeChart);
                 d3.select('span#sliderSizetextmin').text(Math.floor(value[0]));
                 d3.select('span#sliderSizetextmax').text(Math.floor(value[1]));
         }));
 
-        d3.select('#sliderBrightness').call(d3.slider().axis(false).min(BrightnessExtent[0]-5).max(5+BrightnessExtent[1])
+        d3.select('#sliderBrightness').call(d3.slider().axis(false).min(BrightnessExtent[0]).max(BrightnessExtent[1])
             .value(BrightnessExtent)
             .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]);
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
                 dispatch.filter(_newRange,brightnessChart);
                 d3.select('span#sliderBrightnesstextmin').text(Math.floor(value[0]));
                 d3.select('span#sliderBrightnesstextmax').text(Math.floor(value[1]));
         }));
 
-        var chartWidth = parseInt(d3.select("figure").style("width"))*.45;
+        var chartWidth = 200;
 
         var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]);
 
@@ -303,6 +312,7 @@ td.dc-table-label {
 
         FieldNames = [
             "",
+            "Count",
             "Resolution",
             "Price",
             "Weight",
@@ -320,7 +330,9 @@ td.dc-table-label {
         dataTable
         .dimension(ResolutionDimension)
         .group(function(d) {return d.Type;})
+        .size(Infinity)
         .columns([
+        function(d,i) {return i + 1;},
         function(d) {return d.Item;},
         function(d) {return d.PPI},
         function(d) {return d.Price;},
@@ -331,17 +343,18 @@ td.dc-table-label {
         ]);
 
         dispatch.on("filter", function(value,_chart) {
-               _chart.replaceFilter(value);
-               dc.renderAll()
+            _chart.filterAll();
+            _chart.replaceFilter(value);
+            dc.renderAll()
         });
 
+        countWidget
+            .dimension(xf)
+            .group(xf.groupAll());
 
+        dispatch.render()
 
-        // countWidget
-        //     .dimension(xf)
-        //     .group(xf.groupAll());
-
-        dc.renderAll()
+        
 
         // function resize(){
             
@@ -353,6 +366,12 @@ td.dc-table-label {
         // d3.select(window).on("resize",resize);
 
     });
+
+    dispatch.on('render',function(){
+
+        dc.renderAll()
+
+    })
     
     function hypotenuse(w,h) {
         var w = +w;
@@ -376,7 +395,9 @@ td.dc-table-label {
             d.PPI =  Math.round(hypotenuse(d.HorizontalPixels,d.VerticalPixels)/d.DiameterInches);
             d.Type = TypeSansSpace;
         });
-        return Data;
+
+        dispatch.load(Data);
+        
     }
 </script>
 </body>
