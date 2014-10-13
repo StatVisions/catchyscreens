@@ -15,6 +15,7 @@
         <script type="text/javascript" src="node_modules/colorbrewer/colorbrewer.js"></script>
         <link   type="text/css"        href="d3.slider/d3.slider.css" rel="stylesheet">
         <script type="text/javascript" src="d3.slider/d3.slider.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
    
 
     </head>
@@ -62,8 +63,43 @@ td.dc-table-label {
    
 
     <div class="container" role="main" id="container2">
+            :: before
+            <div class="jumbotron">
+                <h1>Catchy Screens! </h1>
+                <p>Ever get confused by tech marketing hype? This tool is designed to help you!</p>
+                <p>Just adjust the sliders below to your liking. Then checkout the list below of devices that meet your criteria</p>
 
-        <div class="jumbotron">
+            </div> <!-- end jumbotron -->
+            
+            <div class="row" id="types">
+            <p>
+                <button type="button" class="btn btn-lg btn-default">All Devices</button>
+                <button type="button" class="btn btn-lg btn-primary">Laptops</button>
+                <button type="button" class="btn btn-lg btn-primary">Smart Phones</button>
+                <button type="button" class="btn btn-lg btn-primary">Smart Watches</button>
+                <button type="button" class="btn btn-lg btn-primary">Tablets</button>
+                <button type="button" class="btn btn-lg btn-primary">Monitors</button>
+                <button type="button" class="btn btn-lg btn-primary">All-in-ones</button>
+            </p>
+            </div>
+
+            <div class="row" id="brands" style="display:none;">
+
+            <p>
+                <button type="button" class="btn btn-default">All Brands</button>
+                <button type="button" class="btn btn-primary">Acer</button>
+                <button type="button" class="btn btn-primary">Amazon</button>
+                <button type="button" class="btn btn-primary">Apple</button>
+                <button type="button" class="btn btn-primary">Dell</button>
+                <button type="button" class="btn btn-primary">HP</button>
+                <button type="button" class="btn btn-primary">HTC</button>
+                 <button type="button" class="btn btn-primary">LG</button>
+                <button type="button" class="btn btn-primary">Microsoft</button>
+                <button type="button" class="btn btn-primary">Nokia</button>
+                <button type="button" class="btn btn-primary">Sony</button>
+                <button type="button" class="btn btn-primary">Samsung</button>
+            </p>
+        </div>
 
             <div class="row" id="1">
                     <figure id="chart1" class="dc-chart col-md-6" style="display: none;">
@@ -112,8 +148,7 @@ td.dc-table-label {
 
                 <div id="sliderBrightness" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 6 -->
-
-          
+    
             <div class="row" id="7">
                 <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
                 <span class="filter-count"></span> selected out of <span class="total-count"></span> records 
@@ -129,7 +164,7 @@ td.dc-table-label {
             </div> <!-- end row 8 -->
 
 
-        </div> <!-- end jumbotron -->
+        
     </div> <!-- end container -->
      
 <script type="text/javascript">
@@ -327,11 +362,11 @@ td.dc-table-label {
         .size(Infinity)
         .columns([
         function(d) {return d.Item;},
-        function(d) {return d.PPI},
-        function(d) {return formatNumber(Math.floor(d.Price));},
-        function(d) {return formatNumber(Math.floor(d.WeightGrams));},
-        function(d) {return d.BrightnessNits;},
-        function(d) {return d.DiameterInches;},
+        function(d) {return d.PPI + " ppi"},
+        function(d) {return "$" + formatNumber(Math.floor(d.Price));},
+        function(d) {return formatNumber(Math.floor(d.WeightGrams)) + " gm";},
+        function(d) {return d.BrightnessNits + " nits";},
+        function(d) {return d.DiameterInches + "\"";},
         function(d) {return "<img src=img\\" + d.AmazonName + ".jpg class=\"thumb\">";}
         ]);
 
