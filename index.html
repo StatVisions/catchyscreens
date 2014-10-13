@@ -73,13 +73,13 @@ td.dc-table-label {
             
             <div class="row" id="types">
             <p>
-                <button type="button" class="btn btn-lg btn-default">All Devices</button>
-                <button type="button" class="btn btn-lg btn-primary">Laptops</button>
-                <button type="button" class="btn btn-lg btn-primary">Smart Phones</button>
-                <button type="button" class="btn btn-lg btn-primary">Smart Watches</button>
-                <button type="button" class="btn btn-lg btn-primary">Tablets</button>
-                <button type="button" class="btn btn-lg btn-primary">Monitors</button>
-                <button type="button" class="btn btn-lg btn-primary">All-in-ones</button>
+                <button type="button" class="btn btn-lg btn-default" onclick="javascript:typeChart.filterAll();dc.redrawAll();">All Devices</button>
+                <button type="button" class="btn btn-lg btn-primary" onclick="javascript:typeChart.filter('laptop');dc.redrawAll();">Laptops</button>
+                <button type="button" class="btn btn-lg btn-primary" onclick="javascript:typeChart.filter('smartphone');dc.redrawAll();">Smart Phones</button>
+                <button type="button" class="btn btn-lg btn-primary" onclick="javascript:typeChart.filter('smartwatch');dc.redrawAll();">Smart Watches</button>
+                <button type="button" class="btn btn-lg btn-primary" onclick="javascript:typeChart.filter('tablet');dc.redrawAll();">Tablets</button>
+                <button type="button" class="btn btn-lg btn-primary" onclick="javascript:typeChart.filter('monitor');dc.redrawAll();">Monitors</button>
+                <button type="button" class="btn btn-lg btn-primary" onclick="javascript:typeChart.filter('all-in-one');dc.redrawAll();">All-in-ones</button>
             </p>
             </div>
 
@@ -119,6 +119,12 @@ td.dc-table-label {
                     </figure>
                     <figure id="chart6" class="dc-chart col-md-6" style="display: none;">
                         <a class="reset" href="javascript:brightnessChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>  
+                    <figure id="chart7" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:typeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>  
+                    <figure id="chart8" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:brandChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
                     </figure>                                                          
             </div> <!-- end row 1 -->
             
@@ -177,6 +183,8 @@ td.dc-table-label {
     var weightChart = dc.barChart("figure#chart4");
     var sizeChart = dc.barChart("figure#chart5");
     var brightnessChart = dc.barChart("figure#chart6");
+    var typeChart = dc.pieChart("figure#chart7");
+    var brandChart = dc.pieChart("figure#chart8");
 
     var dataTable = dc.dataTable("#list");
     var countWidget = dc.dataCount("figure.dc-data-count");
@@ -337,7 +345,22 @@ td.dc-table-label {
             .x(d3.scale.linear().domain(BrightnessExtent))
             .elasticY(true);
 
+        typeChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .radius(chartWidth/2)
+            .dimension(TypeDimension)
+            .group(TypeGroup);
+
+        brandChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .radius(chartWidth/2)
+            .dimension(CompanyDimension)
+            .group(CompanyGroup);
+
         FieldNames = [
+            ["",],
             ["",],
             ["Resolution","PPI"],
             ["Price","Price"],
@@ -362,13 +385,26 @@ td.dc-table-label {
         .size(Infinity)
         .columns([
         function(d) {return d.Item;},
-        function(d) {return d.PPI + " ppi"},
+        function(d) {return "<img src=img\\" + d.AmazonName + ".jpg class=\"thumb\">";},
+        // function(d) {return d.PPI + " ppi"},
+        function(d) {return  getBar(d);},
         function(d) {return "$" + formatNumber(Math.floor(d.Price));},
         function(d) {return formatNumber(Math.floor(d.WeightGrams)) + " gm";},
         function(d) {return d.BrightnessNits + " nits";},
         function(d) {return d.DiameterInches + "\"";},
-        function(d) {return "<img src=img\\" + d.AmazonName + ".jpg class=\"thumb\">";}
+       
         ]);
+
+        var resolutionScale = d3.scale.linear().domain(ResolutionExtent).range([5,65]);
+
+        function getBar(d){
+
+            var w = resolutionScale(d.PPI);
+
+            var string = "<svg width='65' height='15'><rect width=' " +  w +"' height='15' style='fill:#428bca;'></rect></svg>";
+
+            return string;
+        }
 
         dispatch.on("filter", function(value,_chart) {
             _chart.filterAll();
