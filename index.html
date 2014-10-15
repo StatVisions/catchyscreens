@@ -31,54 +31,53 @@ td.dc-table-label {
 </style>
 
 <body>
+    <!-- Fixed navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-
-        <div class="container" id="container1">
-
-            <div class="navbar-header">
-                
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                
-                <a class="navbar-brand">Main</a>
-
-            </div>
-            
-            <div class="collapse navbar-collapse">
-                
-                <ul class="nav navbar-nav"></ul>
-            
-            </div><!--/.nav-collapse -->
-
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Tech Filter</a>
         </div>
-
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+       <!--      <li class="active"><a href="#">Home</a></li> -->
+<!--             <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li> -->
+<!--             <li class="dropdown">  
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li> -->
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
     </div>
-
-   
 
     <div class="container" role="main" id="container2">
             :: before
             <div class="jumbotron">
-                <h1>Welcome to Gadget Shopper!</h1>
-                <p>Ever get confused by tech marketing hype? This tool is designed to help you!</p>
-                <p>Just choose the type of device you need. Then adjust the sliders below to your liking. Once you're done, checkout the list below.</p>
+                <h1>Welcome to Tech Filter!</h1>
+                <p>Do you ever get confused by technical figures while shopping for tech? If the answer is yes, this tool is designed to help you. By design it's designed for people who learn visually.</p>
+                <p>To begin, either choose the type of device you need below or adjust the sliders. Then just adjust until you have the right balance between your needs and what's available. 
+                </p>
+                <p>
+                Check out how your actions effect the visuals below.
+                </p>
 
             </div> <!-- end jumbotron -->
-            
-            <div class="row" id="types">
-            <p>
-                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('laptop');dc.redrawAll();">Laptops</button>
-                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('smartphone');dc.redrawAll();">Smart Phones</button>
-                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('smartwatch');dc.redrawAll();">Smart Watches</button>
-                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('tablet');dc.redrawAll();">Tablets</button>
-                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('monitor');dc.redrawAll();">Monitors</button>
-                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('all-in-one');dc.redrawAll();">All-in-ones</button>
-            </p>
-            </div>
+
 
             <div class="row" id="brands" style="display:none;">
 
@@ -152,18 +151,30 @@ td.dc-table-label {
                 <div id="sliderBrightness" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 6 -->
     
+
+
+
+            <div class="row" id="types">
+                <p style="margin-top:3rem;">
+                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('laptop');dc.redrawAll();">Laptops</button>
+                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('smartphone');dc.redrawAll();">Smart Phones</button>
+                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('smartwatch');dc.redrawAll();">Smart Watches</button>
+                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('tablet');dc.redrawAll();">Tablets</button>
+                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('monitor');dc.redrawAll();">Monitors</button>
+                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('all-in-one');dc.redrawAll();">All-in-ones</button>
+                </p>
+            </div>
+
             <div class="row" id="7">
                 <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
                 <span class="filter-count"></span> selected out of <span class="total-count"></span> records 
                 
                  <button type="button" class="btn btn-xs btn-danger" onclick="javascript:typeChart.filterAll();dc.redrawAll();">Reset</button>
                 </figure>
-
-
             </div> <!-- end row 7 -->
 
             <div class="row" id="8">
-                <table id="list" class="table table-hover dc-data-table dc-chart col-md-12" style="margin-top:5%;">
+                <table id="list" class="table table-hover table-responsive dc-data-table dc-chart col-md-12" style="margin-top:5%;">
                     <thead>
                         <tr id="FieldNames" class="header" style="text-align:left;"></tr>
                     </thead>
