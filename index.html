@@ -15,9 +15,7 @@
         <script type="text/javascript" src="node_modules/colorbrewer/colorbrewer.js"></script>
         <link   type="text/css"        href="d3.slider/d3.slider.css" rel="stylesheet">
         <script type="text/javascript" src="d3.slider/d3.slider.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-   
-
+        <link   type="text/css"        href="node_modules/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">
     </head>
 
 <style>
@@ -65,9 +63,9 @@ td.dc-table-label {
     <div class="container" role="main" id="container2">
             :: before
             <div class="jumbotron">
-                <h1>Lets Tech Filter! </h1>
+                <h1>Welcome to Gadget Shopper!</h1>
                 <p>Ever get confused by tech marketing hype? This tool is designed to help you!</p>
-                <p>Just adjust the sliders below to your liking. Then checkout the list below of devices that meet your criteria</p>
+                <p>Just choose the type of device you need. Then adjust the sliders below to your liking. Once you're done, checkout the list below.</p>
 
             </div> <!-- end jumbotron -->
             
@@ -370,10 +368,11 @@ td.dc-table-label {
             ["",],
             ["",],
             ["Resolution","PPI"],
-            ["Price","Price"],
+            ["Price Estimate","Price"],
             ["Weight","WeightGrams"],
             ["Brightness","BrightnessNits"],
-            ["Screen","DiameterInches"]];
+            ["Screen","DiameterInches"],
+            ["",]];
 
         d3.select("tr#FieldNames").selectAll("th")
             .data(FieldNames)
@@ -402,7 +401,7 @@ td.dc-table-label {
         function(d) {return getBar(d.BrightnessNits,BrightnessExtent);},
         // function(d) {return d.DiameterInches + "\"";},
         function(d) {return getBar(d.DiameterInches,SizeExtent);},
-       
+        function(d) {return getButton(d.PriceSource);},
         ]);
 
         
@@ -416,6 +415,13 @@ td.dc-table-label {
             var string = "<svg width='65' height='15'><rect width=' " +  w +"' height='15' style='fill:#428bca;'></rect></svg>";
 
             return string;
+        }
+
+        function getButton(_url) {
+
+            // Todo: (1) add coding to direct user to buy url, (2) get bootstrap-theme via package manager instead of cdn
+             var string = "<a class='btn btn-success btn-xs' href='" + _url + "' role='button'  target='_blank'>buy</a>";
+             return string;
         }
 
         dispatch.on("filter", function(value,_chart) {
