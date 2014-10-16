@@ -121,7 +121,10 @@ td.dc-table-label {
                     </figure>  
                     <figure id="chart8" class="dc-chart col-md-6" style="display: none;">
                         <a class="reset" href="javascript:brandChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-                    </figure>                                                          
+                    </figure>       
+                    <figure id="chart9" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:batteryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>                                                      
             </div> <!-- end row 1 -->
             
             <div class="row" id="2">
@@ -150,11 +153,15 @@ td.dc-table-label {
 
                 <div id="sliderBrightness" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 6 -->
+
+            <div class="row" id="7">
+                <h5>Battery <span id="sliderBatterytextmin"> </span> , <span id="sliderBatterytextmax"></span></h5>
+
+                <div id="sliderBattery" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 7 -->
     
 
-
-
-            <div class="row" id="types">
+            <div class="row" id="8">
                 <p style="margin-top:3rem;">
                 <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('laptop');dc.redrawAll();">Laptops</button>
                 <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('smartphone');dc.redrawAll();">Smart Phones</button>
@@ -163,21 +170,21 @@ td.dc-table-label {
                 </p>
             </div>
 
-            <div class="row" id="7">
+            <div class="row" id="9">
                 <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
                 <span class="filter-count"></span> selected out of <span class="total-count"></span> records 
                 
                  <button type="button" class="btn btn-xs btn-danger" onclick="javascript:typeChart.filterAll();dc.redrawAll();">Reset</button>
                 </figure>
-            </div> <!-- end row 7 -->
+            </div> <!-- end row 9 -->
 
-            <div class="row" id="8">
+            <div class="row" id="10">
                 <table id="list" class="table table-hover table-responsive dc-data-table dc-chart col-md-12" style="margin-top:5%;">
                     <thead>
                         <tr id="FieldNames" class="header" style="text-align:left;"></tr>
                     </thead>
                 </table> 
-            </div> <!-- end row 8 -->
+            </div> <!-- end row 10 -->
 
 
         
@@ -186,9 +193,6 @@ td.dc-table-label {
 <script type="text/javascript">
 
     
-
-
-
     var formatNumber = d3.format( ",d");
 
     // var typeChart = dc.rowChart("figure#chart1");
@@ -199,6 +203,7 @@ td.dc-table-label {
     var brightnessChart = dc.barChart("figure#chart6");
     var typeChart = dc.pieChart("figure#chart7");
     var brandChart = dc.pieChart("figure#chart8");
+    var batteryChart = dc.barChart("figure#chart9");
 
     var dataTable = dc.dataTable("#list");
     var countWidget = dc.dataCount("figure.dc-data-count");
@@ -220,6 +225,7 @@ td.dc-table-label {
             ResolutionExtent = d3.extent(Data,function(d){return +d.PPI;}),
             SizeExtent = d3.extent(Data,function(d){return +d.DiameterInches;}),
             WeightExtent = d3.extent(Data,function(d){return +d.WeightGrams;});
+            BatteryExtent = d3.extent(Data,function(d){return +d.BatteryMah;});
 
         var CompanyDimension = xf.dimension(function(d) { return d.Company;}),
             CompanyGroup = CompanyDimension.group(),
@@ -240,10 +246,12 @@ td.dc-table-label {
             TypeGroup = TypeDimension.group(),
 
             WeightDimension = xf.dimension(function(d){return d.WeightGrams;}),
-            WeightGroup = WeightDimension.group();  
+            WeightGroup = WeightDimension.group(),
+
+            BatteryDimension = xf.dimension(function(d){return d.BatteryMah;}),
+            BatteryGroup = BatteryDimension.group();
 
             
-
 
         d3.select('span#sliderPricetextmin').text(formatNumber(Math.floor(PriceExtent[0])));
         d3.select('span#sliderPricetextmax').text(formatNumber(Math.floor(PriceExtent[1])));
@@ -260,6 +268,9 @@ td.dc-table-label {
 
         d3.select('span#sliderBrightnesstextmin').text(Math.floor(BrightnessExtent[0]));
         d3.select('span#sliderBrightnesstextmax').text(Math.floor(BrightnessExtent[1]));
+
+        d3.select('span#sliderBatterytextmin').text(Math.floor(BatteryExtent[0]));
+        d3.select('span#sliderBatterytextmax').text(Math.floor(BatteryExtent[1]));
 
         d3.select('#sliderPrice').call(d3.slider().axis(false).min(PriceExtent[0]).max(PriceExtent[1])
             .value(PriceExtent)
@@ -304,6 +315,15 @@ td.dc-table-label {
                 dispatch.filter(_newRange,brightnessChart);
                 d3.select('span#sliderBrightnesstextmin').text(Math.floor(value[0]));
                 d3.select('span#sliderBrightnesstextmax').text(Math.floor(value[1]));
+        }));
+
+        d3.select('#sliderBattery').call(d3.slider().axis(false).min(BatteryExtent[0]).max(BatteryExtent[1])
+            .value(BatteryExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
+                dispatch.filter(_newRange,batteryChart);
+                d3.select('span#sliderBatterytextmin').text(Math.floor(value[0]));
+                d3.select('span#sliderBatterytextmax').text(Math.floor(value[1]));
         }));
 
         var chartWidth = 200;
@@ -373,6 +393,15 @@ td.dc-table-label {
             .dimension(CompanyDimension)
             .group(CompanyGroup);
 
+
+        batteryChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(BatteryDimension)
+            .group(BatteryGroup)
+            .x(d3.scale.linear().domain(BatteryExtent))
+            .elasticY(true);
+
         FieldNames = [
             ["",],
             ["",],
@@ -381,6 +410,7 @@ td.dc-table-label {
             ["Weight","WeightGrams"],
             ["Brightness","BrightnessNits"],
             ["Screen","DiameterInches"],
+            ["Battery","BatteryMah"],
             ["",]];
 
         d3.select("tr#FieldNames").selectAll("th")
@@ -410,6 +440,7 @@ td.dc-table-label {
         function(d) {return getBar(d.BrightnessNits,BrightnessExtent);},
         // function(d) {return d.DiameterInches + "\"";},
         function(d) {return getBar(d.DiameterInches,SizeExtent);},
+        function(d) {return getBar(d.BatteryMah,BatteryExtent);},
         function(d) {return getButton(d.PriceSource);},
         ]);
 
@@ -482,6 +513,7 @@ td.dc-table-label {
             d.HorizontalPixels  = +d.HorizontalPixels;
             d.VerticalPixels    = +d.VerticalPixels;
             d.BrightnessNits    = +d.BrightnessNits;
+            d.BatteryMah        = +d.BatteryMah;
             d.PPI =  Math.round(hypotenuse(d.HorizontalPixels,d.VerticalPixels)/d.DiameterInches);
             d.Type = TypeSansSpace;
         });
