@@ -421,9 +421,9 @@ td.dc-table-label {
 
         var xScale = d3.scale.linear().domain(_extent).range([10,65]);
 
-            var w = xScale(_d);
+            var w = Math.floor(xScale(_d));
 
-            var string = "<svg width='65' height='15'><rect width=' " +  w +"' height='15' style='fill:#428bca;'></rect></svg>";
+            var string = "<svg width='65' height='15'><rect width='" +  w +"' height='15' style='fill:#428bca;'></rect></svg>";
 
             return string;
         }
