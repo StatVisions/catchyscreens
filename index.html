@@ -167,6 +167,7 @@ td.dc-table-label {
                 <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('smartphone');dc.redrawAll();">Smart Phones</button>
                 <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('smartwatch');dc.redrawAll();">Smart Watches</button>
                 <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('tablet');dc.redrawAll();">Tablets</button>
+                <button type="button" class="btn btn-warning" onclick="javascript:typeChart.filterAll();dc.redrawAll();">All</button>
                 </p>
             </div>
 
@@ -174,7 +175,7 @@ td.dc-table-label {
                 <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
                 <span class="filter-count"></span> selected out of <span class="total-count"></span> records 
                 
-                 <button type="button" class="btn btn-xs btn-danger" onclick="javascript:typeChart.filterAll();dc.redrawAll();">Reset</button>
+                 
                 </figure>
             </div> <!-- end row 9 -->
 
