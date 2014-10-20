@@ -196,6 +196,8 @@ td.dc-table-label {
     
     var formatNumber = d3.format( ",d");
 
+    var glbfac = 0.00220462;
+
     // var typeChart = dc.rowChart("figure#chart1");
     var resolutionChart = dc.barChart("figure#chart2");
     var priceChart = dc.barChart("figure#chart3");
@@ -509,7 +511,7 @@ td.dc-table-label {
                 .replace("desktop","")
                 .replace(" ","");
             d.Price             = +d.Price
-            d.WeightGrams       = +d.WeightGrams;
+            d.WeightGrams       = +d.WeightGrams*glbfac;
             d.DiameterInches    = +d.DiameterInches;
             d.HorizontalPixels  = +d.HorizontalPixels;
             d.VerticalPixels    = +d.VerticalPixels;
