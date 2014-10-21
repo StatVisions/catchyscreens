@@ -68,14 +68,24 @@ td.dc-table-label {
     <div class="container" role="main" id="container2">
             :: before
             <div class="jumbotron">
-                <h1>Welcome to Tech Filter!</h1>
+                <h2>Welcome to Tech Filter!</h2>
                 <p>Do you ever get confused by technical figures while shopping for tech? If the answer is yes, this tool is designed to help you. By design it's designed for people who learn visually.</p>
-                <p>To begin, either choose the type of device you need below or adjust the sliders. Then just adjust until you have the right balance between your needs and what's available. 
-                </p>
-                <p>
-                Check out how your actions effect the visuals below.
-                </p>
 
+                <select class="form-control">
+                    <option>Price ($)</option>
+                    <option>Resolution (ppi)</option>
+                    <option>Size (in)</option>
+                    <option>Weight (lb)</option>
+                    <option>Battery (maH)</option>
+                </select>
+
+                <select class="form-control" style = "margin-top:1rem;">
+                    <option>SmartPhones</option>
+                    <option>Tablets</option>
+                    <option>Laptops</option>
+                    <option>SmartWatches</option>
+                    <option>All</option>
+                </select>
             </div> <!-- end jumbotron -->
 
 
@@ -163,11 +173,11 @@ td.dc-table-label {
 
             <div class="row" id="8">
                 <p style="margin-top:3rem;">
-                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('laptop');dc.redrawAll();">Laptops</button>
-                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('smartphone');dc.redrawAll();">Smart Phones</button>
-                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('smartwatch');dc.redrawAll();">Smart Watches</button>
-                <button type="button" class="btn btm-sm  btn-primary" onclick="javascript:typeChart.filter('tablet');dc.redrawAll();">Tablets</button>
-                <button type="button" class="btn btn-warning" onclick="javascript:typeChart.filterAll();dc.redrawAll();">All</button>
+                <button type="button" class="btn btm-xs  btn-primary" onclick="javascript:typeChart.filter('laptop');dc.redrawAll();">Laptops</button>
+                <button type="button" class="btn btm-xs  btn-primary" onclick="javascript:typeChart.filter('smartphone');dc.redrawAll();">Smart Phones</button>
+                <button type="button" class="btn btm-xs  btn-primary" onclick="javascript:typeChart.filter('smartwatch');dc.redrawAll();">Smart Watches</button>
+                <button type="button" class="btn btm-xs  btn-primary" onclick="javascript:typeChart.filter('tablet');dc.redrawAll();">Tablets</button>
+                <button type="button" class="btn btm-xs btn-warning" onclick="javascript:typeChart.filterAll();dc.redrawAll();">All</button>
                 </p>
             </div>
 
