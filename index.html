@@ -71,21 +71,16 @@ td.dc-table-label {
                 <h2>Welcome to Tech Filter!</h2>
                 <p>Do you ever get confused by technical figures while shopping for tech? If the answer is yes, this tool is designed to help you. By design it's designed for people who learn visually.</p>
 
-                <select class="form-control">
-                    <option>Price ($)</option>
-                    <option>Resolution (ppi)</option>
-                    <option>Size (in)</option>
-                    <option>Weight (lb)</option>
-                    <option>Battery (maH)</option>
+                <select class="form-control" id="filtertype" onchange="myFunction()">
+                    <option value="Price">Price ($)</option>
+                    <option value="Resolution">Resolution (ppi)</option>
+                    <option value="Size">Size (in)</option>
+                    <option value="Weight">Weight (lb)</option>
+                    <option value="Battery">Battery (maH)</option>
                 </select>
 
-                <select class="form-control" style = "margin-top:1rem;">
-                    <option>SmartPhones</option>
-                    <option>Tablets</option>
-                    <option>Laptops</option>
-                    <option>SmartWatches</option>
-                    <option>All</option>
-                </select>
+                <p>You are filtering by: <span id="demo">Price</span></p>
+
             </div> <!-- end jumbotron -->
 
 
@@ -99,7 +94,7 @@ td.dc-table-label {
                 <button type="button" class="btn btn-primary">Dell</button>
                 <button type="button" class="btn btn-primary">HP</button>
                 <button type="button" class="btn btn-primary">HTC</button>
-                 <button type="button" class="btn btn-primary">LG</button>
+                <button type="button" class="btn btn-primary">LG</button>
                 <button type="button" class="btn btn-primary">Microsoft</button>
                 <button type="button" class="btn btn-primary">Nokia</button>
                 <button type="button" class="btn btn-primary">Sony</button>
@@ -137,34 +132,34 @@ td.dc-table-label {
                     </figure>                                                      
             </div> <!-- end row 1 -->
             
-            <div class="row" id="2">
+            <div class="row slider Price" id="2" style="display:block;">
                 <h5>Price <span id="sliderPricetextmin"> </span> , <span id="sliderPricetextmax"></span></h5>
                 <div id="sliderPrice" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 2 -->
           
 
-            <div class="row" id="3">
+            <div class="row slider Resolution" id="3" style="display:none">
                 <h5>Resolution <span id="sliderResolutiontextmin"> </span> , <span id="sliderResolutiontextmax"></span></h5>
                 <div id="sliderResolution" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 3 -->
 
-            <div class="row" id="4">
+            <div class="row slider Weight" id="4" style="display:none">>
                 <h5>Weight <span id="sliderWeighttextmin"> </span> , <span id="sliderWeighttextmax"></span></h5>
                 <div id="sliderWeight" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 4 -->
 
-            <div class="row" id="5">
+            <div class="row slider Size" id="5" style="display:none">>
                 <h5>Size <span id="sliderSizetextmin"> </span> , <span id="sliderSizetextmax"></span></h5>
                 <div id="sliderSize" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 5 -->
 
-            <div class="row" id="6">
+            <div class="row slider Brightness" id="6" style="display:none">>
                 <h5>Brightness <span id="sliderBrightnesstextmin"> </span> , <span id="sliderBrightnesstextmax"></span></h5>
 
                 <div id="sliderBrightness" class="d3-slider d3-slider-horizontal col-md-12" ></div>
             </div> <!-- end row 6 -->
 
-            <div class="row" id="7">
+            <div class="row slider Battery" id="7" style="display:none">`>
                 <h5>Battery <span id="sliderBatterytextmin"> </span> , <span id="sliderBatterytextmax"></span></h5>
 
                 <div id="sliderBattery" class="d3-slider d3-slider-horizontal col-md-12" ></div>
@@ -202,6 +197,12 @@ td.dc-table-label {
     </div> <!-- end container -->
      
 <script type="text/javascript">
+
+    
+    function myFunction() {
+        var x = document.getElementById("filtertype").value;
+        document.getElementById("demo").innerHTML = x;
+    }
 
     
     var formatNumber = d3.format( ",d");
