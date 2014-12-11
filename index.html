@@ -1,79 +1,541 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>TechFilter</title>
+        <script type="text/javascript" src="node_modules/d3/d3.js"></script>
+        <script type="text/javascript" src="node_modules/crossfilter/crossfilter.js"></script>
+        <script type="text/javascript" src="node_modules/dc/dc.js"></script>
+        <link   type="text/css"        href="node_modules/dc/dc.css" rel="stylesheet">
+        <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+        <script type="text/javascript" src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+        <link   type="text/css"        href="node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+        <script type="text/javascript" src="node_modules/colorbrewer/colorbrewer.js"></script>
+        <link   type="text/css"        href="d3.slider/d3.slider.css" rel="stylesheet">
+        <script type="text/javascript" src="d3.slider/d3.slider.js"></script>
+        <link   type="text/css"        href="node_modules/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet">
+    </head>
 
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Catchyscreens : ">
+<style>
+img.thumb {
+    width:75px;
+    height:auto;
+}
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+td.dc-table-label {
+    opacity:0.5;
+}
 
-    <title>Catchyscreens</title>
-  </head>
+</style>
 
-  <body>
-
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/StatVisions/catchyscreens">View on GitHub</a>
-
-          <h1 id="project_title">Catchyscreens</h1>
-          <h2 id="project_tagline"></h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/StatVisions/catchyscreens/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/StatVisions/catchyscreens/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
+<body>
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Tech Filter</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+       <!--      <li class="active"><a href="#">Home</a></li> -->
+<!--             <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li> -->
+<!--             <li class="dropdown">  
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li> -->
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+    <div class="container" role="main" id="container2">
+            :: before
+            <div class="jumbotron">
+                <h2>Welcome to Tech Filter!</h2>
+                <p>Do you ever get confused by technical figures while shopping for tech? If the answer is yes, this tool is designed to help you. By design it's designed for people who learn visually.</p>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+            <!--     <select class="form-control" id="filtertype" onchange="myFunction()">
+                    <option value="Price">Price ($)</option>
+                    <option value="Resolution">Resolution (ppi)</option>
+                    <option value="Size">Size (in)</option>
+                    <option value="Weight">Weight (lb)</option>
+                    <option value="Battery">Battery (maH)</option>
+                </select>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+                <p>You are filtering by: <span id="filterName">Price</span></p> -->
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+            </div> <!-- end jumbotron -->
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+            <div class="row" id="brands" style="display:none;">
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+            <p>
+                <button type="button" class="btn btn-default">All Brands</button>
+                <button type="button" class="btn btn-primary">Acer</button>
+                <button type="button" class="btn btn-primary">Amazon</button>
+                <button type="button" class="btn btn-primary">Apple</button>
+                <button type="button" class="btn btn-primary">Dell</button>
+                <button type="button" class="btn btn-primary">HP</button>
+                <button type="button" class="btn btn-primary">HTC</button>
+                <button type="button" class="btn btn-primary">LG</button>
+                <button type="button" class="btn btn-primary">Microsoft</button>
+                <button type="button" class="btn btn-primary">Nokia</button>
+                <button type="button" class="btn btn-primary">Sony</button>
+                <button type="button" class="btn btn-primary">Samsung</button>
+            </p>
+        </div>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+            <div class="row" id="1">
+                    <figure id="chart1" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:typeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>
+                    <figure id="chart2" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:resolutionChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>
+                    <figure id="chart3" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:priceChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>
+                    <figure id="chart4" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:weightChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>
+                    <figure id="chart5" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:sizeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>
+                    <figure id="chart6" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:brightnessChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>  
+                    <figure id="chart7" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:typeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>  
+                    <figure id="chart8" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:brandChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>       
+                    <figure id="chart9" class="dc-chart col-md-6" style="display: none;">
+                        <a class="reset" href="javascript:batteryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
+                    </figure>                                                      
+            </div> <!-- end row 1 -->
+            
+            <div class="row slider Price" id="2" style="display:block;">
+                <h5>Price <span id="sliderPricetextmin"> </span> , <span id="sliderPricetextmax"></span></h5>
+                <div id="sliderPrice" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 2 -->
+          
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+            <div class="row slider Resolution" id="3" style="display:block">
+                <h5>Resolution <span id="sliderResolutiontextmin"> </span> , <span id="sliderResolutiontextmax"></span></h5>
+                <div id="sliderResolution" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 3 -->
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+            <div class="row slider Weight" id="4" style="display:block">
+                <h5>Weight <span id="sliderWeighttextmin"> </span> , <span id="sliderWeighttextmax"></span></h5>
+                <div id="sliderWeight" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 4 -->
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+            <div class="row slider Size" id="5" style="display:block">
+                <h5>Size <span id="sliderSizetextmin"> </span> , <span id="sliderSizetextmax"></span></h5>
+                <div id="sliderSize" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 5 -->
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
+            <div class="row slider Brightness" id="6" style="display:block">
+                <h5>Brightness <span id="sliderBrightnesstextmin"> </span> , <span id="sliderBrightnesstextmax"></span></h5>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Catchyscreens maintained by <a href="https://github.com/StatVisions">StatVisions</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
+                <div id="sliderBrightness" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 6 -->
 
+            <div class="row slider Battery" id="7" style="display:block">
+                <h5>Battery <span id="sliderBatterytextmin"> </span> , <span id="sliderBatterytextmax"></span></h5>
+
+                <div id="sliderBattery" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+            </div> <!-- end row 7 -->
     
 
-  </body>
+            <div class="row" id="8">
+                <p style="margin-top:3rem;">
+                <button type="button" class="btn btm-xs  btn-primary" onclick="javascript:typeChart.filter('laptop');dc.redrawAll();">Laptops</button>
+                <button type="button" class="btn btm-xs  btn-primary" onclick="javascript:typeChart.filter('smartphone');dc.redrawAll();">Smart Phones</button>
+                <button type="button" class="btn btm-xs  btn-primary" onclick="javascript:typeChart.filter('smartwatch');dc.redrawAll();">Smart Watches</button>
+                <button type="button" class="btn btm-xs  btn-primary" onclick="javascript:typeChart.filter('tablet');dc.redrawAll();">Tablets</button>
+                <button type="button" class="btn btm-xs btn-warning" onclick="javascript:typeChart.filterAll();dc.redrawAll();">All</button>
+                </p>
+            </div>
+
+            <div class="row" id="9">
+                <figure class="dc-chart dc-data-count col-md-12" style="display: block;">
+                <span class="filter-count"></span> selected out of <span class="total-count"></span> records 
+                
+                 
+                </figure>
+            </div> <!-- end row 9 -->
+
+            <div class="row" id="10">
+                <table id="list" class="table table-hover table-responsive dc-data-table dc-chart col-md-12" style="margin-top:5%;">
+                    <thead>
+                        <tr id="FieldNames" class="header" style="text-align:left;"></tr>
+                    </thead>
+                </table> 
+            </div> <!-- end row 10 -->
+
+
+        
+    </div> <!-- end container -->
+     
+<script type="text/javascript">
+
+    
+    function myFunction() {
+        var x = document.getElementById("filtertype").value;
+        document.getElementById("filterName").innerHTML = x;
+    }
+
+    
+    var formatNumber = d3.format( ",d");
+
+    var glbfac = 0.00220462;
+
+    // var typeChart = dc.rowChart("figure#chart1");
+    var resolutionChart = dc.barChart("figure#chart2");
+    var priceChart = dc.barChart("figure#chart3");
+    var weightChart = dc.barChart("figure#chart4");
+    var sizeChart = dc.barChart("figure#chart5");
+    var brightnessChart = dc.barChart("figure#chart6");
+    var typeChart = dc.pieChart("figure#chart7");
+    var brandChart = dc.pieChart("figure#chart8");
+    var batteryChart = dc.barChart("figure#chart9");
+
+    var dataTable = dc.dataTable("#list");
+    var countWidget = dc.dataCount("figure.dc-data-count");
+    var dispatch = d3.dispatch("load","filter","render");
+    
+    var xf = crossfilter();
+    var formatNumber = d3.format(",d");
+
+    d3.csv('data/data.csv', function(Data){
+        goData(Data);
+    });
+
+    dispatch.on("load", function(Data) {
+            
+            xf.add(Data);
+
+        var BrightnessExtent = d3.extent(Data,function(d){return +d.BrightnessNits;}),
+            PriceExtent = d3.extent(Data,function(d){return +d.Price;}),
+            ResolutionExtent = d3.extent(Data,function(d){return +d.PPI;}),
+            SizeExtent = d3.extent(Data,function(d){return +d.DiameterInches;}),
+            WeightExtent = d3.extent(Data,function(d){return +d.WeightGrams;});
+            BatteryExtent = d3.extent(Data,function(d){return +d.BatteryMah;});
+
+        var CompanyDimension = xf.dimension(function(d) { return d.Company;}),
+            CompanyGroup = CompanyDimension.group(),
+
+            BrightnessDimension = xf.dimension(function(d) { return d.BrightnessNits}),
+            BrightnessGroup = BrightnessDimension.group(),
+
+            PriceDimension = xf.dimension(function(d){ return d.Price;}),
+            PriceGroup = PriceDimension.group();
+
+            ResolutionDimension = xf.dimension(function(d) { return d.PPI;}),
+            ResolutionGroup = ResolutionDimension.group(),
+
+            SizeDimension = xf.dimension(function(d){ return d.DiameterInches;}),
+            SizeGroup = SizeDimension.group(),
+            
+            TypeDimension = xf.dimension(function(d) { return d.Type;}),
+            TypeGroup = TypeDimension.group(),
+
+            WeightDimension = xf.dimension(function(d){return d.WeightGrams;}),
+            WeightGroup = WeightDimension.group(),
+
+            BatteryDimension = xf.dimension(function(d){return d.BatteryMah;}),
+            BatteryGroup = BatteryDimension.group();
+
+            
+
+        d3.select('span#sliderPricetextmin').text(formatNumber(Math.floor(PriceExtent[0])));
+        d3.select('span#sliderPricetextmax').text(formatNumber(Math.floor(PriceExtent[1])));
+
+
+        d3.select('span#sliderResolutiontextmin').text(Math.floor(ResolutionExtent[0]));
+        d3.select('span#sliderResolutiontextmax').text(Math.floor(ResolutionExtent[1]));
+
+        d3.select('span#sliderWeighttextmin').text(formatNumber(Math.floor(WeightExtent[0])));
+        d3.select('span#sliderWeighttextmax').text(formatNumber(Math.floor(WeightExtent[1])));
+
+        d3.select('span#sliderSizetextmin').text(Math.floor(SizeExtent[0]));
+        d3.select('span#sliderSizetextmax').text(Math.floor(SizeExtent[1]));
+
+        d3.select('span#sliderBrightnesstextmin').text(Math.floor(BrightnessExtent[0]));
+        d3.select('span#sliderBrightnesstextmax').text(Math.floor(BrightnessExtent[1]));
+
+        d3.select('span#sliderBatterytextmin').text(Math.floor(BatteryExtent[0]));
+        d3.select('span#sliderBatterytextmax').text(Math.floor(BatteryExtent[1]));
+
+        d3.select('#sliderPrice').call(d3.slider().axis(false).min(PriceExtent[0]).max(PriceExtent[1])
+            .value(PriceExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
+                dispatch.filter(_newRange,priceChart);
+                d3.select('span#sliderPricetextmin').text(formatNumber(Math.floor(value[0])));
+                d3.select('span#sliderPricetextmax').text(formatNumber(Math.floor(value[1])));
+            }));
+
+        d3.select('#sliderResolution').call(d3.slider().axis(false).min(ResolutionExtent[0]).max(ResolutionExtent[1])
+            .value(ResolutionExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
+                dispatch.filter(_newRange,resolutionChart);
+                d3.select('span#sliderResolutiontextmin').text(Math.floor(value[0]));
+                d3.select('span#sliderResolutiontextmax').text(Math.floor(value[1]));
+        }));
+
+        d3.select('#sliderWeight').call(d3.slider().axis(false).min(WeightExtent[0]).max(WeightExtent[1])
+            .value(WeightExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
+                dispatch.filter(_newRange,weightChart);
+                d3.select('span#sliderWeighttextmin').text(formatNumber(Math.floor(value[0])));
+                d3.select('span#sliderWeighttextmax').text(formatNumber(Math.floor(value[1])));
+        }));
+
+        d3.select('#sliderSize').call(d3.slider().axis(false).min(SizeExtent[0]).max(SizeExtent[1])
+            .value(SizeExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
+                dispatch.filter(_newRange,sizeChart);
+                d3.select('span#sliderSizetextmin').text(Math.floor(value[0]));
+                d3.select('span#sliderSizetextmax').text(Math.floor(value[1]));
+        }));
+
+        d3.select('#sliderBrightness').call(d3.slider().axis(false).min(BrightnessExtent[0]).max(BrightnessExtent[1])
+            .value(BrightnessExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
+                dispatch.filter(_newRange,brightnessChart);
+                d3.select('span#sliderBrightnesstextmin').text(Math.floor(value[0]));
+                d3.select('span#sliderBrightnesstextmax').text(Math.floor(value[1]));
+        }));
+
+        d3.select('#sliderBattery').call(d3.slider().axis(false).min(BatteryExtent[0]).max(BatteryExtent[1])
+            .value(BatteryExtent)
+            .on("slide", function(evt, value) {
+                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
+                dispatch.filter(_newRange,batteryChart);
+                d3.select('span#sliderBatterytextmin').text(Math.floor(value[0]));
+                d3.select('span#sliderBatterytextmax').text(Math.floor(value[1]));
+        }));
+
+        var chartWidth = 200;
+
+        var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]);
+
+        // typeChart.dimension(TypeDimension)
+        // .group(TypeGroup)
+        // .width(chartWidth)
+        // .height(chartWidth*1.5)
+        // .margins({top: 20, right: 0, bottom: -1, left: 0})
+        // .colors(colorScaleType);
+   
+        // colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]);
+
+        resolutionChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(ResolutionDimension)
+            .group(ResolutionGroup)
+            .x(d3.scale.linear().domain(ResolutionExtent))
+            .elasticY(true);
+
+        priceChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(PriceDimension)
+            .group(PriceGroup)
+            .x(d3.scale.linear().domain(PriceExtent))
+            .elasticY(true);
+
+        weightChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(WeightDimension)
+            .group(WeightGroup)
+            .x(d3.scale.linear().domain(WeightExtent))
+            .elasticY(true);
+
+        sizeChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(SizeDimension)
+            .group(SizeGroup)
+            .x(d3.scale.linear().domain(SizeExtent))
+            .elasticY(true);
+
+        brightnessChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(BrightnessDimension)
+            .group(BrightnessGroup)
+            .x(d3.scale.linear().domain(BrightnessExtent))
+            .elasticY(true);
+
+        typeChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .radius(chartWidth/2)
+            .dimension(TypeDimension)
+            .group(TypeGroup);
+
+        brandChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .radius(chartWidth/2)
+            .dimension(CompanyDimension)
+            .group(CompanyGroup);
+
+
+        batteryChart
+            .height(chartWidth)
+            .width(chartWidth)
+            .dimension(BatteryDimension)
+            .group(BatteryGroup)
+            .x(d3.scale.linear().domain(BatteryExtent))
+            .elasticY(true);
+
+        FieldNames = [
+            ["",],
+            ["",],
+            ["Resolution","PPI"],
+            ["Price Estimate","Price"],
+            ["Weight","WeightGrams"],
+            ["Brightness","BrightnessNits"],
+            ["Screen","DiameterInches"],
+            ["Battery","BatteryMah"],
+            ["",]];
+
+        d3.select("tr#FieldNames").selectAll("th")
+            .data(FieldNames)
+            .enter()
+            .append("th")
+            .append("a")
+            .attr("href",function(d){ 
+                return "javascript:dataTable.sortBy(function(d){return d." + d[1]+"});dataTable.redraw()"}) 
+            .append("text")
+            .text(function(d){ return d[0];});
+
+
+        dataTable
+        .dimension(ResolutionDimension)
+        .group(function(d) {return d.Type;})
+        .size(Infinity)
+        .columns([
+        function(d) {return d.Item;},
+        function(d) {return "<img src=img\\" + d.AmazonName + ".jpg class=\"thumb\">";},
+        // function(d) {return d.PPI + " ppi"},
+        function(d) {return  getBar(d.PPI,ResolutionExtent);},
+        function(d) {return "$" + formatNumber(Math.floor(d.Price));},
+        // function(d) {return formatNumber(Math.floor(d.WeightGrams)) + " gm";},
+        function(d) {return getBar(d.WeightGrams,WeightExtent);},
+        // function(d) {return d.BrightnessNits + " nits";},
+        function(d) {return getBar(d.BrightnessNits,BrightnessExtent);},
+        // function(d) {return d.DiameterInches + "\"";},
+        function(d) {return getBar(d.DiameterInches,SizeExtent);},
+        function(d) {return getBar(d.BatteryMah,BatteryExtent);},
+        function(d) {return getButton(d.PriceSource);},
+        ]);
+
+        
+
+        function getBar(_d,_extent){
+
+        var xScale = d3.scale.linear().domain(_extent).range([10,65]);
+
+            var w = Math.floor(xScale(_d));
+
+            var string = "<svg width='65' height='15'><rect width='" +  w +"' height='15' style='fill:#428bca;'></rect></svg>";
+
+            return string;
+        }
+
+        function getButton(_url) {
+
+            // Todo: (1) add coding to direct user to buy url, (2) get bootstrap-theme via package manager instead of cdn
+             var string = "<a class='btn btn-success btn-xs' href='" + _url + "' role='button'  target='_blank'>buy</a>";
+             return string;
+        }
+
+        dispatch.on("filter", function(value,_chart) {
+            _chart.filterAll();
+            _chart.replaceFilter(value);
+            dc.renderAll()
+        });
+
+        countWidget
+            .dimension(xf)
+            .group(xf.groupAll());
+
+        dispatch.render()
+
+        
+        // function resize(){
+            
+        //     var ChartWidth = parseInt(d3.select("figure").style("width"))*.45;
+        //     dc.renderAll();
+        // };
+
+        // // run resize function when the window changes
+        // d3.select(window).on("resize",resize);
+
+    });
+
+    dispatch.on('render',function(){
+
+        dc.renderAll()
+
+    })
+    
+    function hypotenuse(w,h) {
+        var w = +w;
+        var h = +h;
+        var r = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
+        return r;
+    };
+    
+    function goData(Data) {
+        Data.forEach(function(d){
+            var TypeString = d.Type;
+            var TypeSansSpace = TypeString.toLowerCase()
+                .replace("desktop","")
+                .replace(" ","");
+            d.Price             = +d.Price
+            d.WeightGrams       = +d.WeightGrams*glbfac;
+            d.DiameterInches    = +d.DiameterInches;
+            d.HorizontalPixels  = +d.HorizontalPixels;
+            d.VerticalPixels    = +d.VerticalPixels;
+            d.BrightnessNits    = +d.BrightnessNits;
+            d.BatteryMah        = +d.BatteryMah;
+            d.PPI =  Math.round(hypotenuse(d.HorizontalPixels,d.VerticalPixels)/d.DiameterInches);
+            d.Type = TypeSansSpace;
+        });
+
+        dispatch.load(Data);
+        
+    }
+</script>
+</body>
+
 </html>
