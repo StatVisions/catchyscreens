@@ -5,17 +5,18 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>TechFilter</title>
+
+        <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
         <script type="text/javascript" src="node_modules/d3/d3.js"></script>
         <script type="text/javascript" src="node_modules/crossfilter/crossfilter.js"></script>
         <script type="text/javascript" src="node_modules/dc/dc.js"></script>
-        <link   type="text/css"        href="node_modules/dc/dc.css" rel="stylesheet">
-        <script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
+        <link   type="text/css"        href="node_modules/dc/dc.css" rel="stylesheet">        
         <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
         <link   type="text/css"        href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
         <script type="text/javascript" src="node_modules/colorbrewer/colorbrewer.js"></script>
         <link   type="text/css"        href="d3.slider/d3.slider.css" rel="stylesheet">
         <script type="text/javascript" src="d3.slider/d3.slider.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">  
     </head>
 
 <style>
@@ -29,8 +30,8 @@ td.dc-table-label {
 }
 
 div.slider {
-    margin-left: 5%;
-    margin-right: 5%;
+    margin-left: 2%;
+    margin-right: 2%;
 }
 
 </style>
@@ -74,7 +75,7 @@ div.slider {
             :: before
             <div class="jumbotron">
                 <h2>Welcome to Tech Filter!</h2>
-                <p>Do you ever get confused by technical figures while shopping for tech? If the answer is yes, this tool is designed to help you. By design it's designed for people who learn visually.</p>
+                <p>Find the perfect gadget by filtering!</p>
 
             <!--     <select class="form-control" id="filtertype" onchange="myFunction()">
                     <option value="Price">Price ($)</option>
@@ -137,39 +138,69 @@ div.slider {
                     </figure>                                                      
             </div> <!-- end row 1 -->
             
-            <div class="row slider Price" id="2" style="display:block;">
-                <h5>Price <span id="sliderPricetextmin"> </span> , <span id="sliderPricetextmax"></span></h5>
-                <div id="sliderPrice" class="d3-slider d3-slider-horizontal col-md-12" ></div>
-            </div> <!-- end row 2 -->
-          
 
-            <div class="row slider Resolution" id="3" style="display:block">
-                <h5>Resolution <span id="sliderResolutiontextmin"> </span> , <span id="sliderResolutiontextmax"></span></h5>
-                <div id="sliderResolution" class="d3-slider d3-slider-horizontal col-md-12" ></div>
-            </div> <!-- end row 3 -->
 
-            <div class="row slider Weight" id="4" style="display:block">
-                <h5>Weight <span id="sliderWeighttextmin"> </span> , <span id="sliderWeighttextmax"></span></h5>
-                <div id="sliderWeight" class="d3-slider d3-slider-horizontal col-md-12" ></div>
-            </div> <!-- end row 4 -->
+            <div role="tabpanel">
 
-            <div class="row slider Size" id="5" style="display:block">
-                <h5>Size <span id="sliderSizetextmin"> </span> , <span id="sliderSizetextmax"></span></h5>
-                <div id="sliderSize" class="d3-slider d3-slider-horizontal col-md-12" ></div>
-            </div> <!-- end row 5 -->
+                 <!-- Nav tabs -->
+                 <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#price" aria-controls="price" role="tab" data-toggle="tab">Price</a></li>
+                    <li role="presentation"><a href="#resolution" aria-controls="resolution" role="tab" data-toggle="tab">Resolution</a></li>
+                    <li role="presentation"><a href="#weight" aria-controls="weight" role="tab" data-toggle="tab">Weight</a></li>
+                    <li role="presentation"><a href="#size" aria-controls="size" role="tab" data-toggle="tab">Size</a></li>
+                    <li role="presentation"><a href="#brightness" aria-controls="brightness" role="tab" data-toggle="tab">Brightness</a></li>
+                    <li role="presentation"><a href="#battery" aria-controls="battery" role="tab" data-toggle="tab">Battery</a></li>
+                 </ul>
 
-            <div class="row slider Brightness" id="6" style="display:block">
-                <h5>Brightness <span id="sliderBrightnesstextmin"> </span> , <span id="sliderBrightnesstextmax"></span></h5>
+                 <!-- Tab panes -->
+                 <div class="tab-content">
+                   <div role="tabpanel" class="tab-pane active" id="price">
+                        <div class="row slider Price" id="3" style="display:block">
+                            <span id="sliderPricetextmin"> </span> , <span id="sliderPricetextmax"></span>
+                            <div id="sliderPrice" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                        </div> 
+                   </div>
+                   
+                   <div role="tabpanel" class="tab-pane" id="resolution">
+                        <div class="row slider Resolution" id="3" style="display:block">
+                            <span id="sliderResolutiontextmin"> </span> , <span id="sliderResolutiontextmax"></span>
+                            <div id="sliderResolution" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                        </div> 
+                   </div>
+                   
+                   <div role="tabpanel" class="tab-pane" id="weight">
+                    <div class="row slider Weight" id="4" style="display:block">
+                            <span id="sliderWeighttextmin"> </span> , <span id="sliderWeighttextmax"></span>
+                            <div id="sliderWeight" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                     </div> 
+                   </div>
 
-                <div id="sliderBrightness" class="d3-slider d3-slider-horizontal col-md-12" ></div>
-            </div> <!-- end row 6 -->
+                   <div role="tabpanel" class="tab-pane" id="size">
+                        <div class="row slider Size" id="5" style="display:block">
+                            <span id="sliderSizetextmin"> </span> , <span id="sliderSizetextmax"></span>
+                            <div id="sliderSize" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                        </div>
+                   </div>
 
-            <div class="row slider Battery" id="7" style="display:block">
-                <h5>Battery <span id="sliderBatterytextmin"> </span> , <span id="sliderBatterytextmax"></span></h5>
+                   <div role="tabpanel" class="tab-pane" id="brightness">
+                        <div class="row slider Brightness" id="7" style="display:block">
+                            <span id="sliderBrightnesstextmin"> </span> , <span id="sliderBrightnesstextmax"></span>
+                            <div id="sliderBrightness" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                        </div>
+                   </div>       
 
-                <div id="sliderBattery" class="d3-slider d3-slider-horizontal col-md-12" ></div>
-            </div> <!-- end row 7 -->
-    
+                   
+                   <div role="tabpanel" class="tab-pane" id="battery">
+                        <div class="row slider Battery" id="7" style="display:block">
+                            <span id="sliderBatterytextmin"> </span> , <span id="sliderBatterytextmax"></span>
+                            <div id="sliderBattery" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                        </div>
+                   </div>
+                 
+                 </div>
+
+            </div>
+
 
             <div class="row" id="8">
                 <p style="margin-top:3rem;">
@@ -538,6 +569,8 @@ div.slider {
         });
 
         dispatch.load(Data);
+
+
         
     }
 </script>
