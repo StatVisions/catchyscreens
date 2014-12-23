@@ -30,6 +30,7 @@ td.dc-table-label {
 }
 
 div.slider {
+    margin-top:3%;
     margin-left: 2%;
     margin-right: 2%;
 }
@@ -50,23 +51,11 @@ div.slider {
           <a class="navbar-brand" href="#">Tech Filter</a>
         </div>
         <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-       <!--      <li class="active"><a href="#">Home</a></li> -->
-<!--             <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li> -->
-<!--             <li class="dropdown">  
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
+<!--           <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
                 <li><a href="#">Action</a></li>
                 <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li> -->
-          </ul>
+          </ul> -->
         </div><!--/.nav-collapse -->
       </div>
     </div>
@@ -77,68 +66,7 @@ div.slider {
                 <h2>Welcome to Tech Filter!</h2>
                 <p>Find the perfect gadget by filtering!</p>
 
-            <!--     <select class="form-control" id="filtertype" onchange="myFunction()">
-                    <option value="Price">Price ($)</option>
-                    <option value="Resolution">Resolution (ppi)</option>
-                    <option value="Size">Size (in)</option>
-                    <option value="Weight">Weight (lb)</option>
-                    <option value="Battery">Battery (maH)</option>
-                </select>
-
-                <p>You are filtering by: <span id="filterName">Price</span></p> -->
-
             </div> <!-- end jumbotron -->
-
-
-            <div class="row" id="brands" style="display:none;">
-
-            <p>
-                <button type="button" class="btn btn-default">All Brands</button>
-                <button type="button" class="btn btn-primary">Acer</button>
-                <button type="button" class="btn btn-primary">Amazon</button>
-                <button type="button" class="btn btn-primary">Apple</button>
-                <button type="button" class="btn btn-primary">Dell</button>
-                <button type="button" class="btn btn-primary">HP</button>
-                <button type="button" class="btn btn-primary">HTC</button>
-                <button type="button" class="btn btn-primary">LG</button>
-                <button type="button" class="btn btn-primary">Microsoft</button>
-                <button type="button" class="btn btn-primary">Nokia</button>
-                <button type="button" class="btn btn-primary">Sony</button>
-                <button type="button" class="btn btn-primary">Samsung</button>
-            </p>
-        </div>
-
-            <div class="row" id="1">
-                    <figure id="chart1" class="dc-chart col-md-6" style="display: none;">
-                        <a class="reset" href="javascript:typeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-                    </figure>
-                    <figure id="chart2" class="dc-chart col-md-6" style="display: none;">
-                        <a class="reset" href="javascript:resolutionChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-                    </figure>
-                    <figure id="chart3" class="dc-chart col-md-6" style="display: none;">
-                        <a class="reset" href="javascript:priceChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-                    </figure>
-                    <figure id="chart4" class="dc-chart col-md-6" style="display: none;">
-                        <a class="reset" href="javascript:weightChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-                    </figure>
-                    <figure id="chart5" class="dc-chart col-md-6" style="display: none;">
-                        <a class="reset" href="javascript:sizeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-                    </figure>
-                    <figure id="chart6" class="dc-chart col-md-6" style="display: none;">
-                        <a class="reset" href="javascript:brightnessChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-                    </figure>  
-                    <figure id="chart7" class="dc-chart col-md-6" style="display: none;">
-                        <a class="reset" href="javascript:typeChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-                    </figure>  
-                    <figure id="chart8" class="dc-chart col-md-6" style="display: none;">
-                        <a class="reset" href="javascript:brandChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-                    </figure>       
-                    <figure id="chart9" class="dc-chart col-md-6" style="display: none;">
-                        <a class="reset" href="javascript:batteryChart.filterAll();dc.redrawAll();" style="display: none;">reset</a>
-                    </figure>                                                      
-            </div> <!-- end row 1 -->
-            
-
 
             <div role="tabpanel">
 
@@ -157,35 +85,35 @@ div.slider {
                    <div role="tabpanel" class="tab-pane active" id="price">
                         <div class="row slider Price" id="3" style="display:block">
                             <span id="sliderPricetextmin"> </span> , <span id="sliderPricetextmax"></span>
-                            <div id="sliderPrice" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                            <div id="sliderPrice" class="col-md-12" ></div>
                         </div> 
                    </div>
                    
                    <div role="tabpanel" class="tab-pane" id="resolution">
                         <div class="row slider Resolution" id="3" style="display:block">
                             <span id="sliderResolutiontextmin"> </span> , <span id="sliderResolutiontextmax"></span>
-                            <div id="sliderResolution" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                            <div id="sliderResolution" class="col-md-12" ></div>
                         </div> 
                    </div>
                    
                    <div role="tabpanel" class="tab-pane" id="weight">
                     <div class="row slider Weight" id="4" style="display:block">
                             <span id="sliderWeighttextmin"> </span> , <span id="sliderWeighttextmax"></span>
-                            <div id="sliderWeight" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                            <div id="sliderWeight" class="col-md-12" ></div>
                      </div> 
                    </div>
 
                    <div role="tabpanel" class="tab-pane" id="size">
                         <div class="row slider Size" id="5" style="display:block">
                             <span id="sliderSizetextmin"> </span> , <span id="sliderSizetextmax"></span>
-                            <div id="sliderSize" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                            <div id="sliderSize" class="col-md-12" ></div>
                         </div>
                    </div>
 
                    <div role="tabpanel" class="tab-pane" id="brightness">
                         <div class="row slider Brightness" id="7" style="display:block">
                             <span id="sliderBrightnesstextmin"> </span> , <span id="sliderBrightnesstextmax"></span>
-                            <div id="sliderBrightness" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                            <div id="sliderBrightness" class="col-md-12" ></div>
                         </div>
                    </div>       
 
@@ -193,7 +121,7 @@ div.slider {
                    <div role="tabpanel" class="tab-pane" id="battery">
                         <div class="row slider Battery" id="7" style="display:block">
                             <span id="sliderBatterytextmin"> </span> , <span id="sliderBatterytextmax"></span>
-                            <div id="sliderBattery" class="d3-slider d3-slider-horizontal col-md-12" ></div>
+                            <div id="sliderBattery" class="col-md-12" ></div>
                         </div>
                    </div>
                  
@@ -234,26 +162,10 @@ div.slider {
      
 <script type="text/javascript">
 
-    
-    function myFunction() {
-        var x = document.getElementById("filtertype").value;
-        document.getElementById("filterName").innerHTML = x;
-    }
 
-    
     var formatNumber = d3.format( ",d");
 
     var glbfac = 0.00220462;
-
-    // var typeChart = dc.rowChart("figure#chart1");
-    var resolutionChart = dc.barChart("figure#chart2");
-    var priceChart = dc.barChart("figure#chart3");
-    var weightChart = dc.barChart("figure#chart4");
-    var sizeChart = dc.barChart("figure#chart5");
-    var brightnessChart = dc.barChart("figure#chart6");
-    var typeChart = dc.pieChart("figure#chart7");
-    var brandChart = dc.pieChart("figure#chart8");
-    var batteryChart = dc.barChart("figure#chart9");
 
     var dataTable = dc.dataTable("#list");
     var countWidget = dc.dataCount("figure.dc-data-count");
@@ -263,7 +175,7 @@ div.slider {
     var formatNumber = d3.format(",d");
 
     d3.csv('data/data.csv', function(Data){
-        goData(Data);
+        parseData(Data);
     });
 
     dispatch.on("load", function(Data) {
@@ -301,7 +213,7 @@ div.slider {
             BatteryDimension = xf.dimension(function(d){return d.BatteryMah;}),
             BatteryGroup = BatteryDimension.group();
 
-        function injectSlider(label,rangeExtent,_dcChart,_dispatcher){
+        function injectSlider(label,rangeExtent,_dcChart){
 
             var elMin = 'span#slider' + label +'textmin';
             var elMax = 'span#slider' + label +'textmax';
@@ -311,99 +223,20 @@ div.slider {
             d3.select(elMin).text(formatNumber(Math.floor(rangeExtent[0])));
             d3.select(elMax).text(formatNumber(Math.floor(rangeExtent[1])));
 
-            d3.select(elInput).call(d3.slider().axis(false).min(rangeExtent[0]).max(rangeExtent[1])
-            .value(rangeExtent)
-            .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
-                _dispatcher.filter(_newRange,_dcChart);
-                d3.select(elMin).text(formatNumber(Math.floor(value[0])));
-                d3.select(elMax).text(formatNumber(Math.floor(value[1])));
-            }));
+            d3.select(elInput).append("input")
+                .attr("id",elInput)
+                .attr("type","range")
+                .attr("min",rangeExtent[0])
+                .attr("max",rangeExtent[1])
 
         }
 
-        injectSlider('Price',PriceExtent,priceChart,dispatch);
-        injectSlider('Resolution',ResolutionExtent,resolutionChart,dispatch);
-        injectSlider('Weight',WeightExtent,weightChart,dispatch);
-        injectSlider('Size',SizeExtent,sizeChart,dispatch);
-        injectSlider('Brightness',BrightnessExtent,brightnessChart,dispatch);
-        injectSlider('Battery',BatteryExtent,batteryChart,dispatch);
-
-        var chartWidth = 200;
-
-        var colorScaleType = d3.scale.ordinal().range(colorbrewer.Dark2[5]);
-
-        // typeChart.dimension(TypeDimension)
-        // .group(TypeGroup)
-        // .width(chartWidth)
-        // .height(chartWidth*1.5)
-        // .margins({top: 20, right: 0, bottom: -1, left: 0})
-        // .colors(colorScaleType);
-   
-        // colorScaleCompany = d3.scale.ordinal().range(colorbrewer.Dark2[7]);
-
-        resolutionChart
-            .height(chartWidth)
-            .width(chartWidth)
-            .dimension(ResolutionDimension)
-            .group(ResolutionGroup)
-            .x(d3.scale.linear().domain(ResolutionExtent))
-            .elasticY(true);
-
-        priceChart
-            .height(chartWidth)
-            .width(chartWidth)
-            .dimension(PriceDimension)
-            .group(PriceGroup)
-            .x(d3.scale.linear().domain(PriceExtent))
-            .elasticY(true);
-
-        weightChart
-            .height(chartWidth)
-            .width(chartWidth)
-            .dimension(WeightDimension)
-            .group(WeightGroup)
-            .x(d3.scale.linear().domain(WeightExtent))
-            .elasticY(true);
-
-        sizeChart
-            .height(chartWidth)
-            .width(chartWidth)
-            .dimension(SizeDimension)
-            .group(SizeGroup)
-            .x(d3.scale.linear().domain(SizeExtent))
-            .elasticY(true);
-
-        brightnessChart
-            .height(chartWidth)
-            .width(chartWidth)
-            .dimension(BrightnessDimension)
-            .group(BrightnessGroup)
-            .x(d3.scale.linear().domain(BrightnessExtent))
-            .elasticY(true);
-
-        typeChart
-            .height(chartWidth)
-            .width(chartWidth)
-            .radius(chartWidth/2)
-            .dimension(TypeDimension)
-            .group(TypeGroup);
-
-        brandChart
-            .height(chartWidth)
-            .width(chartWidth)
-            .radius(chartWidth/2)
-            .dimension(CompanyDimension)
-            .group(CompanyGroup);
-
-
-        batteryChart
-            .height(chartWidth)
-            .width(chartWidth)
-            .dimension(BatteryDimension)
-            .group(BatteryGroup)
-            .x(d3.scale.linear().domain(BatteryExtent))
-            .elasticY(true);
+        injectSlider('Price',PriceExtent);
+        injectSlider('Resolution',ResolutionExtent);
+        injectSlider('Weight',WeightExtent);
+        injectSlider('Size',SizeExtent);
+        injectSlider('Brightness',BrightnessExtent);
+        injectSlider('Battery',BatteryExtent);
 
         FieldNames = [
             ["",],
@@ -450,6 +283,8 @@ div.slider {
         
 
         function getBar(_d,_extent){
+        console.log('getBar');
+        console.log(_extent);
 
         var xScale = d3.scale.linear().domain(_extent).range([10,65]);
 
@@ -504,7 +339,7 @@ div.slider {
         return r;
     };
     
-    function goData(Data) {
+    function parseData(Data) {
         Data.forEach(function(d){
             var TypeString = d.Type;
             var TypeSansSpace = TypeString.toLowerCase()
@@ -521,11 +356,10 @@ div.slider {
             d.Type = TypeSansSpace;
         });
 
-        dispatch.load(Data);
-
-
-        
+        dispatch.load(Data);        
     }
+
+
 </script>
 </body>
 
