@@ -301,80 +301,33 @@ div.slider {
             BatteryDimension = xf.dimension(function(d){return d.BatteryMah;}),
             BatteryGroup = BatteryDimension.group();
 
-            
+        function injectSlider(label,rangeExtent,_dcChart,_dispatcher){
 
-        d3.select('span#sliderPricetextmin').text(formatNumber(Math.floor(PriceExtent[0])));
-        d3.select('span#sliderPricetextmax').text(formatNumber(Math.floor(PriceExtent[1])));
+            var elMin = 'span#slider' + label +'textmin';
+            var elMax = 'span#slider' + label +'textmax';
+            var elInput = '#slider' + label;
 
 
-        d3.select('span#sliderResolutiontextmin').text(Math.floor(ResolutionExtent[0]));
-        d3.select('span#sliderResolutiontextmax').text(Math.floor(ResolutionExtent[1]));
+            d3.select(elMin).text(formatNumber(Math.floor(rangeExtent[0])));
+            d3.select(elMax).text(formatNumber(Math.floor(rangeExtent[1])));
 
-        d3.select('span#sliderWeighttextmin').text(formatNumber(Math.floor(WeightExtent[0])));
-        d3.select('span#sliderWeighttextmax').text(formatNumber(Math.floor(WeightExtent[1])));
-
-        d3.select('span#sliderSizetextmin').text(Math.floor(SizeExtent[0]));
-        d3.select('span#sliderSizetextmax').text(Math.floor(SizeExtent[1]));
-
-        d3.select('span#sliderBrightnesstextmin').text(Math.floor(BrightnessExtent[0]));
-        d3.select('span#sliderBrightnesstextmax').text(Math.floor(BrightnessExtent[1]));
-
-        d3.select('span#sliderBatterytextmin').text(Math.floor(BatteryExtent[0]));
-        d3.select('span#sliderBatterytextmax').text(Math.floor(BatteryExtent[1]));
-
-        d3.select('#sliderPrice').call(d3.slider().axis(false).min(PriceExtent[0]).max(PriceExtent[1])
-            .value(PriceExtent)
+            d3.select(elInput).call(d3.slider().axis(false).min(rangeExtent[0]).max(rangeExtent[1])
+            .value(rangeExtent)
             .on("slide", function(evt, value) {
                 var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
-                dispatch.filter(_newRange,priceChart);
-                d3.select('span#sliderPricetextmin').text(formatNumber(Math.floor(value[0])));
-                d3.select('span#sliderPricetextmax').text(formatNumber(Math.floor(value[1])));
+                _dispatcher.filter(_newRange,_dcChart);
+                d3.select(elMin).text(formatNumber(Math.floor(value[0])));
+                d3.select(elMax).text(formatNumber(Math.floor(value[1])));
             }));
 
-        d3.select('#sliderResolution').call(d3.slider().axis(false).min(ResolutionExtent[0]).max(ResolutionExtent[1])
-            .value(ResolutionExtent)
-            .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
-                dispatch.filter(_newRange,resolutionChart);
-                d3.select('span#sliderResolutiontextmin').text(Math.floor(value[0]));
-                d3.select('span#sliderResolutiontextmax').text(Math.floor(value[1]));
-        }));
+        }
 
-        d3.select('#sliderWeight').call(d3.slider().axis(false).min(WeightExtent[0]).max(WeightExtent[1])
-            .value(WeightExtent)
-            .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
-                dispatch.filter(_newRange,weightChart);
-                d3.select('span#sliderWeighttextmin').text(formatNumber(Math.floor(value[0])));
-                d3.select('span#sliderWeighttextmax').text(formatNumber(Math.floor(value[1])));
-        }));
-
-        d3.select('#sliderSize').call(d3.slider().axis(false).min(SizeExtent[0]).max(SizeExtent[1])
-            .value(SizeExtent)
-            .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
-                dispatch.filter(_newRange,sizeChart);
-                d3.select('span#sliderSizetextmin').text(Math.floor(value[0]));
-                d3.select('span#sliderSizetextmax').text(Math.floor(value[1]));
-        }));
-
-        d3.select('#sliderBrightness').call(d3.slider().axis(false).min(BrightnessExtent[0]).max(BrightnessExtent[1])
-            .value(BrightnessExtent)
-            .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
-                dispatch.filter(_newRange,brightnessChart);
-                d3.select('span#sliderBrightnesstextmin').text(Math.floor(value[0]));
-                d3.select('span#sliderBrightnesstextmax').text(Math.floor(value[1]));
-        }));
-
-        d3.select('#sliderBattery').call(d3.slider().axis(false).min(BatteryExtent[0]).max(BatteryExtent[1])
-            .value(BatteryExtent)
-            .on("slide", function(evt, value) {
-                var _newRange = dc.filters.RangedFilter(value[0],value[1]+1);
-                dispatch.filter(_newRange,batteryChart);
-                d3.select('span#sliderBatterytextmin').text(Math.floor(value[0]));
-                d3.select('span#sliderBatterytextmax').text(Math.floor(value[1]));
-        }));
+        injectSlider('Price',PriceExtent,priceChart,dispatch);
+        injectSlider('Resolution',ResolutionExtent,resolutionChart,dispatch);
+        injectSlider('Weight',WeightExtent,weightChart,dispatch);
+        injectSlider('Size',SizeExtent,sizeChart,dispatch);
+        injectSlider('Brightness',BrightnessExtent,brightnessChart,dispatch);
+        injectSlider('Battery',BatteryExtent,batteryChart,dispatch);
 
         var chartWidth = 200;
 
