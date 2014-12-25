@@ -54,7 +54,6 @@ div.slider {
 <!--           <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
           </ul> -->
         </div><!--/.nav-collapse -->
       </div>
@@ -174,6 +173,33 @@ div.slider {
     var xf = crossfilter();
     var formatNumber = d3.format(",d");
 
+    function hypotenuse(w,h) {
+        var w = +w;
+        var h = +h;
+        var r = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
+        return r;
+    };
+    
+    function parseData(Data) {
+        Data.forEach(function(d){
+            var TypeString = d.Type;
+            var TypeSansSpace = TypeString.toLowerCase()
+                .replace("desktop","")
+                .replace(" ","");
+            d.Price             = +d.Price
+            d.WeightGrams       = +d.WeightGrams*glbfac;
+            d.DiameterInches    = +d.DiameterInches;
+            d.HorizontalPixels  = +d.HorizontalPixels;
+            d.VerticalPixels    = +d.VerticalPixels;
+            d.BrightnessNits    = +d.BrightnessNits;
+            d.BatteryMah        = +d.BatteryMah;
+            d.PPI =  Math.round(hypotenuse(d.HorizontalPixels,d.VerticalPixels)/d.DiameterInches);
+            d.Type = TypeSansSpace;
+        });
+
+        dispatch.load(Data);        
+    }
+
     d3.csv('data/data.csv', function(Data){
         parseData(Data);
     });
@@ -213,7 +239,7 @@ div.slider {
             BatteryDimension = xf.dimension(function(d){return d.BatteryMah;}),
             BatteryGroup = BatteryDimension.group();
 
-        function injectSlider(label,rangeExtent,_dcChart){
+        function injectSlider(label,rangeExtent){
 
             var elMin = 'span#slider' + label +'textmin';
             var elMax = 'span#slider' + label +'textmax';
@@ -223,11 +249,16 @@ div.slider {
             d3.select(elMin).text(formatNumber(Math.floor(rangeExtent[0])));
             d3.select(elMax).text(formatNumber(Math.floor(rangeExtent[1])));
 
-            d3.select(elInput).append("input")
-                .attr("id",elInput)
-                .attr("type","range")
-                .attr("min",rangeExtent[0])
-                .attr("max",rangeExtent[1])
+            var el = d3.select(elInput).append("input")
+                        .attr("id",elInput)
+                        .attr("type","range")
+                        .attr("min",rangeExtent[0])
+                        .attr("max",rangeExtent[1]);
+
+            
+            el.on("input",function(){
+                console.log(this.value);
+            })
 
         }
 
@@ -283,8 +314,6 @@ div.slider {
         
 
         function getBar(_d,_extent){
-        console.log('getBar');
-        console.log(_extent);
 
         var xScale = d3.scale.linear().domain(_extent).range([10,65]);
 
@@ -332,32 +361,7 @@ div.slider {
 
     })
     
-    function hypotenuse(w,h) {
-        var w = +w;
-        var h = +h;
-        var r = Math.sqrt(Math.pow(w,2) + Math.pow(h,2));
-        return r;
-    };
-    
-    function parseData(Data) {
-        Data.forEach(function(d){
-            var TypeString = d.Type;
-            var TypeSansSpace = TypeString.toLowerCase()
-                .replace("desktop","")
-                .replace(" ","");
-            d.Price             = +d.Price
-            d.WeightGrams       = +d.WeightGrams*glbfac;
-            d.DiameterInches    = +d.DiameterInches;
-            d.HorizontalPixels  = +d.HorizontalPixels;
-            d.VerticalPixels    = +d.VerticalPixels;
-            d.BrightnessNits    = +d.BrightnessNits;
-            d.BatteryMah        = +d.BatteryMah;
-            d.PPI =  Math.round(hypotenuse(d.HorizontalPixels,d.VerticalPixels)/d.DiameterInches);
-            d.Type = TypeSansSpace;
-        });
 
-        dispatch.load(Data);        
-    }
 
 
 </script>

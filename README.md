@@ -17,3 +17,10 @@ Recommendations
 =============
 1. I would use Amazon or Bestbuy. It's probably better to use Amazon since we can make money from linking to their products.
 2. Make sure to try to keep fields consistent.
+
+GAL Feedback
+==============
+1. Add percentages to bars
+2. Add grouping
+3. Add picture expand and dimension on hover
+4. I noticed the font may have been to small
