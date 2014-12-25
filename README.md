@@ -24,3 +24,4 @@ GAL Feedback
 2. Add grouping
 3. Add picture expand and dimension on hover
 4. I noticed the font may have been to small
+5. Add freeze panes to table
